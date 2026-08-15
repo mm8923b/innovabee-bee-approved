@@ -19,6 +19,7 @@
   /* Innovabee-CI-Akzente (Website/CD-Handbuch): Blau #509bc4 · Pink #f0567f · Hellblau */
   --teal:#509bc4; --violet:#f0567f; --coral:#6ba0bf; --sky:#8fb9d4;
   --radius:20px; --shadow:0 18px 50px -20px rgba(0,0,0,.7);
+  --track:rgba(255,255,255,.10); --card:rgba(255,255,255,.03);
   --font:'Mona Sans','Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 }
 /* ---------- HELLES THEME (weißer Hintergrund, Innovabee-CI) ---------- */
@@ -28,6 +29,7 @@ html[data-theme="light"]{
   --ink:#191929; --ink2:#454b60; --ink3:#7b8296;
   --gold-ink:#8a6d00; --yellow-dim:rgba(253,195,0,.22); --grey:#b3b9c6;
   --shadow:0 18px 44px -22px rgba(25,25,41,.26);
+  --track:rgba(25,25,41,.10); --card:#ffffff;
 }
 html[data-theme="light"] body{
   background:
@@ -86,11 +88,12 @@ header{position:sticky;top:0;z-index:40;backdrop-filter:blur(18px);
 .cockpit{display:grid;grid-template-columns:auto 1fr auto;gap:22px;align-items:center;
   background:linear-gradient(135deg,var(--panel),var(--bg2));border:1px solid var(--line);
   border-radius:var(--radius);padding:20px 24px;margin:24px 0 18px;box-shadow:var(--shadow)}
-.ring{position:relative;width:92px;height:92px;flex-shrink:0}
+.ring{position:relative;width:118px;height:118px;flex-shrink:0}
 .ring svg{transform:rotate(-90deg)}
-.ring .ct{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
-.ring .ct b{font-size:23px;font-weight:800;line-height:1}
-.ring .ct span{font-size:10px;color:var(--ink3);font-weight:600;text-transform:uppercase;letter-spacing:.08em}
+.ring #ringProg{filter:drop-shadow(0 2px 7px rgba(52,217,154,.40));transition:stroke-dashoffset .8s cubic-bezier(.4,0,.2,1)}
+.ring .ct{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:3px}
+.ring .ct b{font-size:31px;font-weight:800;line-height:1;letter-spacing:-.02em;color:var(--ink)}
+.ring .ct span{font-size:9px;color:var(--ink3);font-weight:700;text-transform:uppercase;letter-spacing:.15em}
 .counts{display:flex;gap:12px;flex-wrap:wrap}
 .count{display:flex;align-items:center;gap:10px;background:var(--bg);border:1px solid var(--line);
   border-radius:14px;padding:11px 16px;min-width:118px}
@@ -323,7 +326,7 @@ header{position:sticky;top:0;z-index:40;backdrop-filter:blur(18px);
 
 /* ---------- POLISH ---------- */
 #ringProg{transition:stroke-dashoffset .7s cubic-bezier(.4,0,.2,1)}
-.ring .ct b{font-size:22px} .ring .ct span{font-size:9px;margin-top:1px}
+.ring .ct b{font-size:31px} .ring .ct span{font-size:9px}
 *::-webkit-scrollbar{width:10px;height:10px}
 *::-webkit-scrollbar-thumb{background:rgba(255,255,255,.13);border-radius:10px;border:3px solid transparent;background-clip:padding-box}
 *::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.22);background-clip:padding-box}
@@ -435,10 +438,16 @@ button:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px
  <!-- COCKPIT -->
  <div class="cockpit">
    <div class="ring">
-     <svg width="92" height="92">
-       <circle cx="46" cy="46" r="40" stroke="rgba(255,255,255,.08)" stroke-width="8" fill="none"/>
-       <circle id="ringProg" cx="46" cy="46" r="40" stroke="var(--green)" stroke-width="8" fill="none"
-         stroke-linecap="round" stroke-dasharray="251.3" stroke-dashoffset="251.3"/>
+     <svg width="118" height="118" viewBox="0 0 118 118">
+       <defs>
+         <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+           <stop offset="0" stop-color="#34d99a"/>
+           <stop offset="1" stop-color="#2bb3c9"/>
+         </linearGradient>
+       </defs>
+       <circle cx="59" cy="59" r="51" stroke="var(--track)" stroke-width="9" fill="none"/>
+       <circle id="ringProg" cx="59" cy="59" r="51" stroke="url(#ringGrad)" stroke-width="9" fill="none"
+         stroke-linecap="round" stroke-dasharray="320.44" stroke-dashoffset="320.44"/>
      </svg>
      <div class="ct"><b id="ringPct">0%</b><span id="ringLbl">freigegeben</span></div>
    </div>
@@ -1011,7 +1020,7 @@ function fmtBody(txt){
 /* ============ RENDER COCKPIT ============ */
 function renderCockpit(){
   const ps=visiblePosts();
-  const total=ps.length, circ=251.3;
+  const total=ps.length, circ=320.44;
   const db=document.getElementById('doneBanner');
   let pct, defs;
   if(isVeto()){
