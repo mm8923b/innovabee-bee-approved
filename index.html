@@ -217,6 +217,14 @@ header{position:sticky;top:0;z-index:40;backdrop-filter:blur(18px);
 .pcard.locked{border-left-style:dashed}
 .ci-tick{margin-left:auto;font-size:8px;font-weight:800;color:var(--green);background:rgba(62,207,142,.14);padding:1px 5px;border-radius:10px;letter-spacing:.02em}
 .ci-tick.pend{color:var(--ink3);background:rgba(120,134,150,.16)}
+.ci-tick.veto{color:#fff;background:var(--red)}
+.amp.ok{background:var(--green);box-shadow:0 0 0 3px var(--panel),0 0 12px rgba(62,207,142,.55)}
+.amp.veto{background:var(--red);box-shadow:0 0 0 3px var(--panel),0 0 12px rgba(255,93,108,.55)}
+.pcard.vetoed{box-shadow:inset 0 0 0 1.5px rgba(255,93,108,.45)}
+.kcard.vetoed{box-shadow:inset 0 0 0 1.5px rgba(255,93,108,.45)}
+.veto-warn{background:rgba(255,93,108,.12);border:1px solid rgba(255,93,108,.36);border-radius:12px;padding:11px 13px;font-size:12.5px;color:var(--ink);line-height:1.5;margin-bottom:13px}
+.veto-active{font-size:13px;font-weight:800;color:var(--red);background:rgba(255,93,108,.12);border:1px solid rgba(255,93,108,.3);border-radius:12px;padding:11px 13px;margin-bottom:11px;line-height:1.45}
+.abtn.vetobtn{width:100%;flex:none;justify-content:center;margin-top:6px}
 .gate{background:var(--panel);border:1px dashed var(--line2);border-radius:16px;padding:20px 18px;text-align:center}
 .gate-h{font-size:14.5px;font-weight:800;color:var(--ink);margin-bottom:7px}
 .gate-t{font-size:12.5px;color:var(--ink2);line-height:1.5;max-width:370px;margin:0 auto}
@@ -408,7 +416,7 @@ button:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px
    <div class="hspace"></div>
    <div class="ptoggle" id="ptoggle">
      <button data-p="beide" class="active">Übersicht</button>
-     <button data-p="astrid"><span class="av" style="background:var(--violet)">AG</span>Astrid<small>CI</small></button>
+     <button data-p="astrid"><span class="av" style="background:var(--violet)">AG</span>Astrid<small>VETO</small></button>
      <button data-p="florian"><span class="av" style="background:var(--yellow)">FH</span>Florian</button>
      <button data-p="saskia"><span class="av" style="background:var(--teal)">SF</span>Saskia</button>
    </div>
@@ -432,12 +440,12 @@ button:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px
        <circle id="ringProg" cx="46" cy="46" r="40" stroke="var(--green)" stroke-width="8" fill="none"
          stroke-linecap="round" stroke-dasharray="251.3" stroke-dashoffset="251.3"/>
      </svg>
-     <div class="ct"><b id="ringPct">0%</b><span>freigegeben</span></div>
+     <div class="ct"><b id="ringPct">0%</b><span id="ringLbl">freigegeben</span></div>
    </div>
    <div class="counts" id="counts"></div>
    <div class="cockpit-actions">
      <div class="nudge">⏱️ Freigabe bis <b>Fr, 28.08.</b> — dann startet die Produktion</div>
-     <button class="btn-all" onclick="approveAll()">✓ Alle offenen freigeben</button>
+     <button class="btn-all" onclick="approveAll()">✓ Alle freigeben</button>
    </div>
  </div>
 
@@ -957,19 +965,21 @@ Was habt ihr zuletzt bewusst losgelassen – und es nicht bereut? 👇`,
 ];
 
 /* ============ STATE ============ */
-const LS='beeApproved_v2';
+const LS='beeApproved_v3';
 let state = JSON.parse(localStorage.getItem(LS)||'{}');
 RAW.forEach(p=>{
-  if(!state[p.id]) state[p.id]={status:'offen',fbText:'',chips:[],voice:false,ver:1,ci:{status:'offen',fbText:'',chips:[],voice:false}};
-  if(!state[p.id].ci) state[p.id].ci={status:'offen',fbText:'',chips:[],voice:false};
+  // Standard: Florian/Saskia (C-Level) haben bereits freigegeben ('gruen'). Astrid = nachgelagertes Veto (Warnflag).
+  if(!state[p.id]) state[p.id]={status:'gruen',fbText:'',chips:[],voice:false,ver:1,veto:{active:false,fbText:'',chips:[],voice:false}};
+  if(!state[p.id].veto) state[p.id].veto={active:false,fbText:'',chips:[],voice:false};
 });
 function save(){localStorage.setItem(LS,JSON.stringify(state));}
-/* ==== Rollen-/Dimensions-Logik: Astrid = CI-Ebene (vorgelagert), Florian/Saskia = Voice-Ebene ==== */
-const isCI = ()=> curPerson==='astrid';
-function curS(id){ return isCI()?state[id].ci:state[id]; }   // aktives Feld-Set je Rolle
-function actStatus(id){ return curS(id).status; }
-function ciGreen(id){ return state[id].ci.status==='gruen'; }
-function actionable(id){ return isCI()?true:ciGreen(id); }   // Voice-Freigabe erst nach CI-Grün
+/* ==== Rollen-Logik: Florian/Saskia = C-Level-Freigabe (primär, Standard=freigegeben) · Astrid = nachgelagertes Veto (Warnflag, F/S entscheiden final) ==== */
+const isVeto = ()=> curPerson==='astrid';
+function vetoed(id){ return !!state[id].veto.active; }
+// Status je Rolle: Astrid → 'veto'|'ok', sonst F/S-Ampel
+function actStatus(id){ return isVeto()?(vetoed(id)?'veto':'ok'):state[id].status; }
+// Feld-Set für Chips/Text/Voice je Rolle (Astrid schreibt in .veto, F/S in den Post)
+function curFB(id){ return isVeto()?state[id].veto:state[id]; }
 
 let curPerson='beide', curView='cal', openId=null, bodyExpanded=false;
 const TRUNC=180;
@@ -1001,38 +1011,55 @@ function fmtBody(txt){
 /* ============ RENDER COCKPIT ============ */
 function renderCockpit(){
   const ps=visiblePosts();
-  const c={gruen:0,orange:0,rot:0,offen:0};
-  ps.forEach(p=>c[actStatus(p.id)]++);
-  const total=ps.length, done=c.gruen, pct=total?Math.round(done/total*100):0;
-  // Abschluss-Banner
-  const allDone=total>0&&done===total;
+  const total=ps.length, circ=251.3;
   const db=document.getElementById('doneBanner');
-  db.classList.toggle('show',allDone);
-  if(allDone)document.getElementById('doneText').textContent=`Alle ${total} Posts sind grün. Wir übernehmen ab hier: einplanen, posten, dranbleiben.`;
-  document.getElementById('ringPct').textContent=pct+'%';
-  const circ=251.3;
+  let pct, defs;
+  if(isVeto()){
+    // Astrid: Veto-Ebene
+    const vc=ps.filter(p=>vetoed(p.id)).length, ok=total-vc;
+    pct=total?Math.round(ok/total*100):0;
+    defs=[
+      {n:vc,l:'Veto eingelegt',col:'var(--red)'},
+      {n:ok,l:'Kein Einwand',col:'var(--green)'}
+    ];
+    db.classList.remove('show');
+    document.getElementById('ringPct').textContent=vc?vc:'0';
+    document.getElementById('ringLbl') && (document.getElementById('ringLbl').textContent='Vetos');
+  } else {
+    // Florian/Saskia/Übersicht: primäre Freigabe (Standard = freigegeben)
+    const c={gruen:0,orange:0,rot:0};
+    ps.forEach(p=>{const s=state[p.id].status; if(c[s]!==undefined)c[s]++;});
+    const done=c.gruen; pct=total?Math.round(done/total*100):0;
+    const allDone=total>0&&done===total;
+    db.classList.toggle('show',allDone);
+    if(allDone)document.getElementById('doneText').textContent=`Alle ${total} Posts sind freigegeben. Wir übernehmen ab hier: einplanen, posten, dranbleiben.`;
+    document.getElementById('ringPct').textContent=pct+'%';
+    document.getElementById('ringLbl') && (document.getElementById('ringLbl').textContent='freigegeben');
+    defs=[
+      {n:c.gruen,l:'Freigegeben',col:'var(--green)'},
+      {n:c.orange,l:'In Korrektur',col:'var(--orange)'},
+      {n:c.rot,l:'Abgelehnt',col:'var(--red)'}
+    ];
+  }
   document.getElementById('ringProg').style.strokeDashoffset=circ-(circ*pct/100);
-  const gLabel=isCI()?'CI-frei':'Freigegeben';
-  const defs=[
-    {k:'gruen',l:gLabel,col:'var(--green)'},
-    {k:'orange',l:'In Korrektur',col:'var(--orange)'},
-    {k:'rot',l:'Abgelehnt',col:'var(--red)'},
-    {k:'offen',l:'Offen',col:'var(--grey)'}
-  ];
   document.getElementById('counts').innerHTML=defs.map(d=>
-    `<div class="count"><span class="dot" style="background:${d.col}"></span><div><b>${c[d.k]}</b><span>${d.l}</span></div></div>`).join('');
-  // marco cockpit badge (offene Rückmeldungen der aktiven Ebene: Korrektur + Ablehnung)
-  const corr=visiblePosts().filter(p=>['orange','rot'].includes(actStatus(p.id)));
+    `<div class="count"><span class="dot" style="background:${d.col}"></span><div><b>${d.n}</b><span>${d.l}</span></div></div>`).join('');
+  // Cockpit-Badge (global): F/S Korrektur/Ablehnung + Astrid-Vetos
+  const corr=RAW.filter(p=>['orange','rot'].includes(state[p.id].status)||vetoed(p.id));
   const badge=document.getElementById('mcBadge');
   badge.textContent=corr.length;
   badge.style.opacity=corr.length?'1':'.45';
+  // Cockpit-Actions je Rolle: Astrid legt nur Vetos ein → keine Sammel-Freigabe
+  const ba=document.querySelector('.btn-all'), nu=document.querySelector('.nudge');
+  if(ba) ba.style.display=isVeto()?'none':'';
+  if(nu) nu.innerHTML=isVeto()?'🛡️ Astrid: Veto einlegen, wenn etwas nicht zur Marke passt — sonst bleibt alles freigegeben.':'⏱️ Freigabe bis <b>Fr, 28.08.</b> — dann startet die Produktion';
 }
 
 /* ============ RENDER LEGEND ============ */
 function renderLegend(){
   const el=document.getElementById('legend');
   if(curPerson==='beide'){el.innerHTML=`<div class="li" style="color:var(--ink3)">Säulen je Person — im Personen-Filter sichtbar</div>`;return;}
-  if(curPerson==='astrid'){el.innerHTML=`<div class="li" style="color:var(--ink3);margin-right:4px">CI-Check:</div>`+CI_CHECK.map(c=>`<div class="li"><i style="background:var(--violet)"></i>${c}</div>`).join('');return;}
+  if(curPerson==='astrid'){el.innerHTML=`<div class="li" style="color:var(--ink3);margin-right:4px">Veto-Kriterien (Marke/CI):</div>`+CI_CHECK.map(c=>`<div class="li"><i style="background:var(--violet)"></i>${c}</div>`).join('');return;}
   const pl=PILLARS[curPerson];
   el.innerHTML=Object.keys(pl).map(k=>`<div class="li"><i style="background:${pl[k].c}"></i>${pl[k].l}</div>`).join('');
 }
@@ -1051,10 +1078,10 @@ function renderCalendar(){
         <div class="dh"><span class="dd">${d}${date?' · '+date:''}</span><span class="dt">LinkedIn</span></div>`;
       dayPosts.forEach(p=>{
         const pl=pill(p),st=actStatus(p.id);
-        const locked = !isCI() && curPerson!=='beide' && !ciGreen(p.id);
-        html+=`<div class="pcard${locked?' locked':''}" style="border-left-color:${pl.c}" onclick="openModal('${p.id}')">
-          ${locked?'<span class="lock" title="Wartet auf CI-Freigabe durch Astrid">🔒</span>':`<span class="amp ${st}"></span>`}
-          ${curPerson==='beide'?`<div class="who"><span class="av" style="background:${PEOPLE[p.p].avc}">${PEOPLE[p.p].av}</span>${PEOPLE[p.p].name.split(' ')[0]}${ciGreen(p.id)?'<span class="ci-tick" title="CI freigegeben">CI✓</span>':'<span class="ci-tick pend" title="CI offen">CI</span>'}</div>`:''}
+        const vflag = vetoed(p.id);
+        html+=`<div class="pcard${vflag?' vetoed':''}" style="border-left-color:${pl.c}" onclick="openModal('${p.id}')">
+          <span class="amp ${st}"></span>
+          ${curPerson==='beide'?`<div class="who"><span class="av" style="background:${PEOPLE[p.p].avc}">${PEOPLE[p.p].av}</span>${PEOPLE[p.p].name.split(' ')[0]}${vflag?'<span class="ci-tick veto" title="Astrid-Veto">⚠ Veto</span>':''}</div>`:''}
           <div class="th">${p.theme}</div>
           <div class="meta"><span class="pill" style="background:${pl.c}22;color:color-mix(in srgb, ${pl.c} 72%, var(--ink))">${pl.l}</span><span class="fmt">${p.fmt}</span></div>
         </div>`;
@@ -1069,23 +1096,21 @@ function renderCalendar(){
 /* ============ RENDER BOARD ============ */
 function renderBoard(){
   const ps=visiblePosts();
-  const cols=[
-    {k:['offen','rot'],t:isCI()?'CI zu prüfen':'Zur Freigabe',ic:'⚪'},
-    {k:['orange'],t:'In Korrektur',ic:'🟠'},
-    {k:['gruen'],t:isCI()?'CI freigegeben':'Freigegeben',ic:'🟢'}
-  ];
+  const cols = isVeto()
+    ? [ {k:['ok'],t:'Kein Einwand',ic:'🟢'}, {k:['veto'],t:'Veto eingelegt',ic:'⛔'} ]
+    : [ {k:['orange'],t:'In Korrektur',ic:'🟠'}, {k:['rot'],t:'Abgelehnt',ic:'🔴'}, {k:['gruen'],t:'Freigegeben',ic:'🟢'} ];
   return `<div class="kanban">`+cols.map(col=>{
     const items=ps.filter(p=>col.k.includes(actStatus(p.id)));
     return `<div class="kcol"><h3>${col.ic} ${col.t}<span class="n">${items.length}</span></h3>`+
-      items.map(p=>{const pl=pill(p),st=actStatus(p.id);
-        const locked = !isCI() && curPerson!=='beide' && !ciGreen(p.id);
-        return `<div class="kcard${locked?' locked':''}" onclick="openModal('${p.id}')">
-          <div class="kt">${locked?'🔒 ':''}${p.theme}</div>
+      items.map(p=>{const pl=pill(p);
+        const vflag=vetoed(p.id);
+        return `<div class="kcard${vflag?' vetoed':''}" onclick="openModal('${p.id}')">
+          <div class="kt">${p.theme}</div>
           <div class="kmeta">
             ${curPerson==='beide'?`<span class="av" style="width:18px;height:18px;border-radius:50%;font-size:9px;font-weight:800;display:grid;place-items:center;color:#12121c;background:${PEOPLE[p.p].avc}">${PEOPLE[p.p].av}</span>`:''}
             <span class="pill" style="font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:20px;background:${pl.c}22;color:color-mix(in srgb, ${pl.c} 72%, var(--ink))">${pl.l}</span>
             <span class="fmt" style="font-size:10px;color:var(--ink3);font-weight:600;margin-left:auto">${p.day} ${p.date}</span>
-            ${st==='rot'?'<span style="font-size:10px;color:var(--red);font-weight:700">abgelehnt</span>':locked?'<span style="font-size:10px;color:var(--ink3);font-weight:700">wartet auf CI</span>':''}
+            ${(curPerson==='beide'&&vflag)?'<span style="font-size:10px;color:var(--red);font-weight:700">⚠ Veto</span>':''}
           </div>
         </div>`;
       }).join('')+
@@ -1096,22 +1121,23 @@ function renderBoard(){
 
 function renderGreet(){
   const el=document.getElementById('greet');
-  if(curPerson==='beide'){ el.innerHTML='👋 <b>Euer September steht bereit</b> — 24 Posts. Ablauf: <b>Astrid CI-Check</b> → <b>Florian/Saskia Voice-Freigabe</b>.'; return; }
-  if(curPerson==='astrid'){ const open=RAW.filter(p=>state[p.id].ci.status==='offen').length; el.innerHTML=`👋 Hallo <b>Astrid</b> — <b>CI-Check</b> für 24 Posts (Marke · Design · Tonalität).${open?` <b>${open}</b> offen.`:' alles geprüft ✓'}`; return; }
-  const per=PEOPLE[curPerson], own=RAW.filter(p=>p.p===curPerson); const ready=own.filter(p=>ciGreen(p.id)).length;
-  el.innerHTML=`👋 Hallo <b>${per.name.split(' ')[0]}</b> — dein September (12 Posts). <b>${ready}</b> ${ready===1?'ist':'sind'} CI-frei & ${ready===1?'wartet':'warten'} auf deine Freigabe${ready<12?` · ${12-ready} noch bei Astrid`:''}.`;
+  if(curPerson==='beide'){ el.innerHTML='👋 <b>Euer September steht bereit</b> — 24 Posts, von Florian &amp; Saskia freigegeben. <b>Astrid</b> kann nachgelagert ein <b>Veto</b> einlegen (Marke/CI) — sonst bleibt alles live.'; return; }
+  if(curPerson==='astrid'){ const vc=RAW.filter(p=>vetoed(p.id)).length; el.innerHTML=`👋 Hallo <b>Astrid</b> — <b>Marken-/CI-Check</b> für 24 freigegebene Posts. Leg ein <b>Veto</b> ein, wenn etwas nicht zur Marke passt.${vc?` <b>${vc}</b> Veto${vc>1?'s':''} aktiv.`:' Aktuell kein Veto — alles bleibt freigegeben.'}`; return; }
+  const per=PEOPLE[curPerson], own=RAW.filter(p=>p.p===curPerson); const vc=own.filter(p=>vetoed(p.id)).length;
+  el.innerHTML=`👋 Hallo <b>${per.name.split(' ')[0]}</b> — deine 12 Posts sind <b>freigegeben</b>. Ändere per Korrektur oder lehne ab, wenn du willst.${vc?` ⚠️ <b>${vc}</b> Astrid-Veto${vc>1?'s':''} zu deinen Posts — bitte prüfen.`:''}`;
 }
 function renderPProg(){
   const el=document.getElementById('pprog');
   if(curPerson!=='beide'){el.style.display='none';el.innerHTML='';return;}
   el.style.display='flex';
-  const ciDone=RAW.filter(p=>state[p.id].ci.status==='gruen').length, ciPct=Math.round(ciDone/RAW.length*100);
-  const ciBar=`<div class="pp"><div class="l"><span class="av" style="background:var(--violet)">AG</span>Astrid · CI<span>${ciDone}/${RAW.length} CI-frei</span></div><div class="bar"><i style="width:${ciPct}%;background:var(--violet)"></i></div></div>`;
-  el.innerHTML=ciBar+['florian','saskia'].map(pk=>{
+  const perBars=['florian','saskia'].map(pk=>{
     const per=PEOPLE[pk], posts=RAW.filter(p=>p.p===pk);
     const done=posts.filter(p=>state[p.id].status==='gruen').length, pct=Math.round(done/posts.length*100);
     return `<div class="pp"><div class="l"><span class="av" style="background:${per.avc}">${per.av}</span>${per.name.split(' ')[0]}<span>${done}/${posts.length} freigegeben</span></div><div class="bar"><i style="width:${pct}%"></i></div></div>`;
   }).join('');
+  const vc=RAW.filter(p=>vetoed(p.id)).length, vpct=Math.round(vc/RAW.length*100);
+  const vetoBar=`<div class="pp"><div class="l"><span class="av" style="background:var(--violet)">AG</span>Astrid · Veto<span>${vc?`${vc} Veto${vc>1?'s':''}`:'kein Veto'}</span></div><div class="bar"><i style="width:${vpct}%;background:var(--red)"></i></div></div>`;
+  el.innerHTML=perBars+vetoBar;
 }
 function render(){
   renderCockpit();renderLegend();renderGreet();renderPProg();
@@ -1122,8 +1148,8 @@ function render(){
 function openModal(id){
   openId=id;
   const p=RAW.find(x=>x.id===id), s=state[id], pl=pill(p), per=PEOPLE[p.p];
-  const ci=s.ci, dim=curS(id);
-  const chipsList = isCI() ? ['Logo/Wortmarke','Farbe daneben','Bild unpassend','Ton zu flapsig','Rechtlich prüfen'] : ['Kürzer','Weniger Fachsprache','Anderes Bild','Hook ändern','Persönlicher','CTA schärfen'];
+  const veto=s.veto, fbSet=curFB(id);
+  const chipsList = isVeto() ? ['Logo/Wortmarke','Farbe daneben','Bild unpassend','Ton zu flapsig','Rechtlich prüfen'] : ['Kürzer','Weniger Fachsprache','Anderes Bild','Hook ändern','Persönlicher','CTA schärfen'];
   bodyExpanded=false;
   const bd=bodyOf(p);
   const isLong=bd.length>TRUNC;
@@ -1134,53 +1160,70 @@ function openModal(id){
   const lc=(ok,txt)=>`<span class="lc ${ok?'ok':'warn'}">${ok?'✓':'!'} ${txt}</span>`;
   const liCheck=`<div class="sect-l">LinkedIn-Feinschliff</div><div class="licheck">${lc(hookOk,'Hook vor „…mehr"')}<span class="lc">≈ ${chars} Zeichen</span>${lc(hCount>=3&&hCount<=5,hCount+' Hashtags')}${lc(endsQ,'endet mit Frage')}</div>`;
 
-  /* ===== Rollen-abhängige Bausteine (Astrid=CI · Florian/Saskia=Voice · Übersicht=read-only) ===== */
-  const ciStateLabel={offen:'CI offen',gruen:'CI ✓',orange:'CI-Korrektur',rot:'CI abgelehnt'}[ci.status];
-  const ciBadge=`<span class="ci-badge ci-${ci.status}">${ciStateLabel}</span>`;
-  const checkHTML = isCI()
-    ? `<div class="sect-l">CI-Prüfpunkte</div><div class="licheck">${CI_CHECK.map(c=>`<span class="lc">◦ ${c}</span>`).join('')}</div>`
+  /* ===== Rollen-abhängige Bausteine: Florian/Saskia = C-Level-Freigabe (primär) · Astrid = Veto (nachgelagert) · Übersicht = read-only ===== */
+  const vetoBadge = vetoed(id)?'<span class="ci-badge ci-rot">⚠ Veto (Astrid)</span>':'';
+  const checkHTML = isVeto()
+    ? `<div class="sect-l">Veto-Kriterien (Marke/CI)</div><div class="licheck">${CI_CHECK.map(c=>`<span class="lc">◦ ${c}</span>`).join('')}</div>`
     : liCheck;
-  const gLbl=isCI()?'CI ok':'Freigeben', oLbl=isCI()?'CI-Korrektur':'Korrektur';
+  // Florian/Saskia — primäre Freigabe-Ampel
   const ampelHTML=`<div class="ampel">
-        <button class="abtn g ${dim.status==='gruen'?'active':''}" onclick="setStatus('gruen')"><span class="ic">✓</span>${gLbl}</button>
-        <button class="abtn o ${dim.status==='orange'?'active':''}" onclick="setStatus('orange')"><span class="ic">✎</span>${oLbl}</button>
-        <button class="abtn r ${dim.status==='rot'?'active':''}" onclick="setStatus('rot')"><span class="ic">✕</span>Ablehnen</button>
+        <button class="abtn g ${s.status==='gruen'?'active':''}" onclick="setStatus('gruen')"><span class="ic">✓</span>Freigeben</button>
+        <button class="abtn o ${s.status==='orange'?'active':''}" onclick="setStatus('orange')"><span class="ic">✎</span>Korrektur</button>
+        <button class="abtn r ${s.status==='rot'?'active':''}" onclick="setStatus('rot')"><span class="ic">✕</span>Ablehnen</button>
       </div>`;
-  const fbHTML=`<div class="fb ${(dim.status==='orange'||dim.status==='rot')?'show':''} ${dim.status==='rot'?'reject':''}" id="fbBox">
-        <div class="sect-l" id="fbLabel" style="margin-top:0">${dim.status==='rot'?'Warum abgelehnt? (optional)':(isCI()?'Was stimmt an der CI nicht?':'Was soll geändert werden?')}</div>
-        <div class="chips">${chipsList.map(c=>`<button class="qchip ${dim.chips.includes(c)?'on':''}" onclick="toggleChip('${c}')">${c}</button>`).join('')}</div>
-        <textarea id="fbText" placeholder="Kurz schreiben, was anders soll … (oder Voice unten aufnehmen)">${dim.fbText||''}</textarea>
+  const fbHTML=`<div class="fb ${(s.status==='orange'||s.status==='rot')?'show':''} ${s.status==='rot'?'reject':''}" id="fbBox">
+        <div class="sect-l" id="fbLabel" style="margin-top:0">${s.status==='rot'?'Warum abgelehnt? (optional)':'Was soll geändert werden?'}</div>
+        <div class="chips">${chipsList.map(c=>`<button class="qchip ${s.chips.includes(c)?'on':''}" onclick="toggleChip('${c}')">${c}</button>`).join('')}</div>
+        <textarea id="fbText" placeholder="Kurz schreiben, was anders soll … (oder Voice unten aufnehmen)">${s.fbText||''}</textarea>
         <div class="voicebar">
           <button class="recbtn" id="recBtn" onclick="toggleRec()"><span class="rd"></span><span id="recLbl">Voice aufnehmen</span></button>
           <span class="trans-hint" id="transHint">📝 wird live transkribiert …</span>
-          <div class="voice-out ${dim.voice?'show':''}" id="voiceOut">🎤 <span id="voiceLbl">Sprachnachricht gespeichert</span><audio id="voiceAudio" controls style="display:none"></audio></div>
+          <div class="voice-out ${s.voice?'show':''}" id="voiceOut">🎤 <span id="voiceLbl">Sprachnachricht gespeichert</span><audio id="voiceAudio" controls style="display:none"></audio></div>
         </div>
         <div class="voice-help">🎙️ Einfach reinsprechen — wird direkt in Text umgewandelt.</div>
-        <button class="fb-save" id="fbSave" onclick="saveFeedback()">${dim.status==='rot'?'Ablehnung bestätigen':(isCI()?'CI-Korrektur an 923b →':'Korrektur an 923b senden →')}</button>
+        <button class="fb-save" id="fbSave" onclick="saveFeedback()">${s.status==='rot'?'Ablehnung bestätigen':'Korrektur an 923b senden →'}</button>
       </div>`;
-  const exportHTML=`<div class="exportbar ${(!isCI()&&s.status==='gruen')?'show':''}" id="exportBar">
+  // Astrid — Veto-Formular (eingeklappt bis „Veto einlegen")
+  const vetoFormHTML=`<div class="fb" id="fbBox">
+        <div class="sect-l" style="margin-top:0">Warum ein Veto? (Marke/CI)</div>
+        <div class="chips">${chipsList.map(c=>`<button class="qchip ${veto.chips.includes(c)?'on':''}" onclick="toggleChip('${c}')">${c}</button>`).join('')}</div>
+        <textarea id="fbText" placeholder="Kurz: was widerspricht der Marke/CI? (oder Voice unten aufnehmen)">${veto.fbText||''}</textarea>
+        <div class="voicebar">
+          <button class="recbtn" id="recBtn" onclick="toggleRec()"><span class="rd"></span><span id="recLbl">Voice aufnehmen</span></button>
+          <span class="trans-hint" id="transHint">📝 wird live transkribiert …</span>
+          <div class="voice-out ${veto.voice?'show':''}" id="voiceOut">🎤 <span id="voiceLbl">Sprachnachricht gespeichert</span><audio id="voiceAudio" controls style="display:none"></audio></div>
+        </div>
+        <div class="voice-help">🎙️ Einfach reinsprechen — wird direkt in Text umgewandelt.</div>
+        <button class="fb-save" id="fbSave" style="background:var(--red);color:#fff" onclick="submitVeto()">⛔ Veto absenden →</button>
+      </div>`;
+  const exportHTML=`<div class="exportbar ${(!isVeto()&&s.status==='gruen')?'show':''}" id="exportBar">
         <button class="exbtn" onclick="copyText()">📋 Text kopieren</button>
         <button class="exbtn" onclick="alert('Im Live-System: Bild/Carousel als Datei herunterladen.')">🖼️ Bild herunterladen</button>
       </div>`;
   let decisionHTML;
-  const locked = !isCI() && curPerson!=='beide' && !ciGreen(id);
-  if(isCI()){
-    decisionHTML=`<div class="sect-l">CI-Freigabe · Marke &amp; Design</div>${ampelHTML}${fbHTML}`;
+  if(isVeto()){
+    if(veto.active){
+      decisionHTML=`<div class="veto-active">⛔ Veto eingelegt${veto.fbText?`: „${veto.fbText.replace(/</g,'&lt;')}"`:''}</div>
+        <div class="ov-hint">Der Post bleibt bei <b>${per.name.split(' ')[0]}</b> (C-Level) — Florian/Saskia entscheiden final, ob sie ihn trotzdem posten. 923b arbeitet dein Veto ein.</div>
+        <button class="fb-save" style="background:var(--grey);color:#fff" onclick="withdrawVeto()">Veto zurückziehen</button>`;
+    } else {
+      decisionHTML=`<div class="ci-ok" style="color:var(--green)">✓ Von ${per.name.split(' ')[0]} freigegeben</div>
+        <div class="sect-l">Marke &amp; CI in Ordnung?</div>
+        <div class="ov-hint">Passt alles → nichts tun, der Post bleibt live. Nur wenn etwas der Marke widerspricht:</div>
+        <button class="abtn r vetobtn" id="vetoTrigger" onclick="openVeto()"><span class="ic">⚠</span> Veto einlegen</button>
+        ${vetoFormHTML}`;
+    }
   } else if(curPerson==='beide'){
     decisionHTML=`<div class="sect-l">Status</div>
       <div class="ov-status">
-        <div class="ov-row"><span class="av-mini" style="background:var(--violet)">AG</span> CI-Freigabe (Astrid) <span class="stpill ${ci.status}">${statusLabel(ci.status)}</span></div>
-        <div class="ov-row"><span class="av-mini" style="background:${per.avc}">${per.av}</span> Voice (${per.name.split(' ')[0]}) <span class="stpill ${s.status}">${statusLabel(s.status)}</span></div>
+        <div class="ov-row"><span class="av-mini" style="background:${per.avc}">${per.av}</span> Freigabe (${per.name.split(' ')[0]}) <span class="stpill ${s.status}">${statusLabel(s.status)}</span></div>
+        <div class="ov-row"><span class="av-mini" style="background:var(--violet)">AG</span> Marken-Veto (Astrid) <span class="stpill ${vetoed(id)?'rot':'gruen'}">${vetoed(id)?'⚠ Veto':'kein Veto'}</span></div>
       </div>
-      <div class="ov-hint">Zum Freigeben oben die Rolle wählen — <b>Astrid</b> prüft CI, dann <b>${per.name.split(' ')[0]}</b> die Stimme.</div>
+      <div class="ov-hint">Zum Bearbeiten oben die Rolle wählen — <b>${per.name.split(' ')[0]}</b> gibt frei (C-Level), <b>Astrid</b> kann ein Veto einlegen.</div>
       ${exportHTML}`;
-  } else if(locked){
-    decisionHTML=`<div class="gate">
-        <div class="gate-h">🔒 Wartet auf CI-Freigabe durch Astrid</div>
-        <div class="gate-t">${(ci.status==='orange'||ci.status==='rot')?`Astrid hat eine CI-Rückmeldung hinterlassen${ci.fbText?`: „${ci.fbText.replace(/</g,'&lt;')}"`:''}. 923b arbeitet das ein — danach kannst du freigeben.`:'Sobald Astrid den CI-Haken grün setzt, erscheint hier deine Freigabe.'}</div>
-      </div>`;
   } else {
-    decisionHTML=`<div class="ci-ok">✓ CI freigegeben von Astrid</div><div class="sect-l">Deine Freigabe</div>${ampelHTML}${fbHTML}${exportHTML}`;
+    const warn = vetoed(id)?`<div class="veto-warn">⚠️ <b>Astrid-Veto</b>${veto.fbText?`: „${veto.fbText.replace(/</g,'&lt;')}"`:''} — bitte prüfen. Du entscheidest final.</div>`:'';
+    decisionHTML=`${warn}<div class="sect-l">Deine Freigabe</div>${ampelHTML}${fbHTML}${exportHTML}`;
   }
 
   document.getElementById('modal').innerHTML=`
@@ -1231,8 +1274,8 @@ function openModal(id){
         <span class="tag-pill" style="background:${pl.c}22;color:color-mix(in srgb, ${pl.c} 72%, var(--ink))">● ${pl.l}</span>
         <span class="chip-mini">${p.fmt}</span>
         <span class="chip-mini">${p.day}, ${p.date} · ${p.time}</span>
-        ${!isCI()?ciBadge:''}
-        <span class="stpill ${dim.status}" id="stPill">${statusLabel(dim.status)}</span>
+        ${!isVeto()?vetoBadge:''}
+        <span class="stpill ${isVeto()?(veto.active?'rot':'gruen'):s.status}" id="stPill">${isVeto()?(veto.active?'⛔ Veto':'✓ kein Veto'):statusLabel(s.status)}</span>
       </div>
       <h2>${p.theme}</h2>
       ${s.ver>1?`<div class="v-badge">✓ V${s.ver} · dein Feedback eingearbeitet</div>`:''}
@@ -1270,51 +1313,70 @@ function closeModal(){
   document.body.style.overflow='';
   openId=null;
 }
-function setStatus(st){
-  const s=curS(openId);
+function setStatus(st){   // Florian/Saskia — primäre Freigabe
+  const s=state[openId];
   s.status=st; save();
   document.querySelectorAll('.abtn').forEach(b=>b.classList.remove('active'));
   document.querySelector('.abtn.'+({gruen:'g',orange:'o',rot:'r'}[st])).classList.add('active');
-  // status pill
   const sp=document.getElementById('stPill');
   sp.className='stpill '+st; sp.textContent=statusLabel(st);
-  // feedback box (correction OR rejection reason)
   const fb=document.getElementById('fbBox');
   fb.classList.toggle('show',st==='orange'||st==='rot');
   fb.classList.toggle('reject',st==='rot');
   if(st==='orange'||st==='rot'){
-    document.getElementById('fbLabel').textContent = st==='rot'?'Warum abgelehnt? (optional)':(isCI()?'Was stimmt an der CI nicht?':'Was soll geändert werden?');
-    document.getElementById('fbSave').textContent = st==='rot'?'Ablehnung bestätigen':(isCI()?'CI-Korrektur an 923b →':'Korrektur an 923b senden →');
+    document.getElementById('fbLabel').textContent = st==='rot'?'Warum abgelehnt? (optional)':'Was soll geändert werden?';
+    document.getElementById('fbSave').textContent = st==='rot'?'Ablehnung bestätigen':'Korrektur an 923b senden →';
   }
-  const eb=document.getElementById('exportBar'); if(eb) eb.classList.toggle('show', !isCI()&&st==='gruen');
+  const eb=document.getElementById('exportBar'); if(eb) eb.classList.toggle('show', st==='gruen');
   if(st==='gruen') burst();
   render();
 }
+/* ===== Astrid — Veto (nachgelagert, Warnflag) ===== */
+function openVeto(){
+  const fb=document.getElementById('fbBox'); if(fb) fb.classList.add('show');
+  const t=document.getElementById('vetoTrigger'); if(t) t.style.display='none';
+}
+function submitVeto(){
+  const v=state[openId].veto, id=openId;
+  v.fbText=document.getElementById('fbText').value;
+  v.active=true; save();
+  const btn=(typeof event!=='undefined'&&event)?event.target:document.getElementById('fbSave');
+  if(btn){ btn.textContent='✓ Veto abgesendet'; btn.style.background='var(--grey)'; }
+  render();
+  toast('⛔ Veto vermerkt — Florian/Saskia sehen den Hinweis, entscheiden aber final.','work',3200);
+  setTimeout(()=>{ if(openId===id) openModal(id); },900);
+}
+function withdrawVeto(){
+  const v=state[openId].veto, id=openId;
+  v.active=false; v.fbText=''; v.chips=[]; v.voice=false; save();
+  render(); openModal(id);
+  toast('Veto zurückgezogen — Post bleibt freigegeben.','ok',2400);
+}
 function toggleChip(c){
-  const s=curS(openId);
+  const s=curFB(openId);
   const i=s.chips.indexOf(c);
   if(i>=0)s.chips.splice(i,1);else s.chips.push(c);
   save();
   event.target.classList.toggle('on');
 }
-function saveFeedback(){
-  const dim=curS(openId), p=RAW.find(x=>x.id===openId), id=openId;
-  dim.fbText=document.getElementById('fbText').value;
+function saveFeedback(){   // Florian/Saskia — Korrektur/Ablehnung
+  const s=state[openId], p=RAW.find(x=>x.id===openId), id=openId;
+  s.fbText=document.getElementById('fbText').value;
   save();
-  const isRej=dim.status==='rot';
-  const btn=event.target, orig=isRej?'Ablehnung bestätigen':(isCI()?'CI-Korrektur an 923b →':'Korrektur an 923b senden →');
+  const isRej=s.status==='rot';
+  const btn=event.target, orig=isRej?'Ablehnung bestätigen':'Korrektur an 923b senden →';
   btn.textContent=isRej?'✓ Vermerkt':'✓ An 923b gesendet'; btn.style.background='var(--green)';btn.style.color='#08281a';
   render();
-  // Live-Korrekturschleife → V2 (nur auf der Voice-Ebene)
-  if(!isCI() && !isRej && p.v2 && state[id].ver<2){
+  // Live-Korrekturschleife → V2
+  if(!isRej && p.v2 && state[id].ver<2){
     toast('<span class="spin"></span> 923b arbeitet die Korrektur ein …','work',0);
     setTimeout(()=>{
       const st=state[id];
-      st.ver=2; st.status='offen'; st.chips=[]; st.fbText=''; st.voice=false;
+      st.ver=2; st.status='gruen'; st.chips=[]; st.fbText=''; st.voice=false;
       save();
       if(openId===id) openModal(id);
       render();
-      toast('✨ V2 ist da — dein Feedback eingearbeitet. Bitte final freigeben.','ok',3400);
+      toast('✨ V2 ist da — dein Feedback eingearbeitet, Post wieder freigegeben.','ok',3400);
     },2200);
   } else {
     setTimeout(()=>{btn.textContent=orig;btn.style.background='';btn.style.color='';},1600);
@@ -1327,7 +1389,8 @@ function copyText(){
   });
 }
 function approveAll(){
-  visiblePosts().forEach(p=>{ if(curS(p.id).status==='offen' && actionable(p.id)) curS(p.id).status='gruen'; });
+  if(isVeto()) return;   // Astrid legt nur Vetos ein — keine Sammel-Freigabe
+  visiblePosts().forEach(p=>{ state[p.id].status='gruen'; });
   save();render();burst();
 }
 
@@ -1386,7 +1449,7 @@ function startMediaOnly(){ // Audio-Aufnahme ohne Transkript (Fallback)
 }
 
 function fakeVoice(){ // weder Mikro noch Speech-API
-  curS(openId).voice=true;save();render();
+  curFB(openId).voice=true;save();render();
   const vl=document.getElementById('voiceLbl'); if(vl)vl.textContent='Sprachnachricht (Demo)';
   const vo=document.getElementById('voiceOut'); if(vo)vo.classList.add('show');
   alert('Mikrofon/Transkription in diesem Browser nicht verfügbar — im Live-System läuft die Aufnahme + Transkription serverseitig (Whisper/ElevenLabs).');
@@ -1404,7 +1467,7 @@ function stopRecIfAny(){
   const ta=document.getElementById('fbText');
   const txt = ta?ta.value.trim():'';
   if(recSec>0 || txt){
-    const s=state[openId];
+    const s=curFB(openId);
     s.voice=true; if(ta) s.fbText=ta.value; save();
     const vl=document.getElementById('voiceLbl');
     if(vl) vl.textContent = txt ? ('🎤 aufgenommen · ✅ transkribiert') : ('Sprachnachricht ('+fmtSec(recSec)+')');
@@ -1421,22 +1484,28 @@ function toggleDrawer(open){
   d.classList.toggle('open',open);
 }
 function renderDrawer(){
-  const items=RAW.filter(p=>['orange','rot'].includes(state[p.id].status));
   const el=document.getElementById('mcBody');
-  if(!items.length){el.innerHTML='<div class="mc-empty">Alles im grünen Bereich 🎉<br>Sobald Florian oder Saskia „Korrektur" oder<br>„Ablehnen" wählt, landet die Rückmeldung hier bei dir.</div>';return;}
-  const order={orange:0,rot:1};
-  items.sort((a,b)=>order[state[a.id].status]-order[state[b.id].status]);
-  el.innerHTML=items.map(p=>{const per=PEOPLE[p.p];const s=state[p.id];
-    const isRej=s.status==='rot';
-    const accent=isRej?'var(--red)':'var(--orange)';
-    return `<div class="mc-item" style="border-left-color:${accent}">
-      <div class="top"><span class="av" style="width:20px;height:20px;border-radius:50%;font-size:9px;font-weight:800;display:grid;place-items:center;color:#12121c;background:${per.avc}">${per.av}</span>
-        <span style="font-size:11px;color:var(--ink3);font-weight:600">${per.name.split(' ')[0]} · ${p.day} ${p.date}</span>
-        <span style="margin-left:auto;font-size:9.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:${accent};background:${isRej?'rgba(255,93,108,.14)':'rgba(255,159,69,.14)'};padding:3px 8px;border-radius:20px">${isRej?'Abgelehnt':'Korrektur'}</span></div>
+  const vetoItems=RAW.filter(p=>vetoed(p.id)).map(p=>({p,kind:'veto'}));
+  const fsItems=RAW.filter(p=>['orange','rot'].includes(state[p.id].status)).map(p=>({p,kind:state[p.id].status}));
+  const items=[...vetoItems,...fsItems];   // Vetos zuerst, dann F/S-Rückmeldungen
+  if(!items.length){el.innerHTML='<div class="mc-empty">Alles im grünen Bereich 🎉<br>Sobald Florian/Saskia „Korrektur"/„Ablehnen" wählen<br>oder Astrid ein Veto einlegt, landet es hier.</div>';return;}
+  const conf={ veto:{lbl:'Veto · Astrid',col:'var(--violet)',bg:'rgba(240,86,127,.16)'},
+               rot:{lbl:'Abgelehnt',col:'var(--red)',bg:'rgba(255,93,108,.14)'},
+               orange:{lbl:'Korrektur',col:'var(--orange)',bg:'rgba(255,159,69,.14)'} };
+  el.innerHTML=items.map(({p,kind})=>{
+    const per=PEOPLE[p.p], cf=conf[kind];
+    const src = kind==='veto'?state[p.id].veto:state[p.id];
+    const who = kind==='veto'?'Astrid':per.name.split(' ')[0];
+    const avc = kind==='veto'?'var(--violet)':per.avc;
+    const avt = kind==='veto'?'AG':per.av;
+    return `<div class="mc-item" style="border-left-color:${cf.col}">
+      <div class="top"><span class="av" style="width:20px;height:20px;border-radius:50%;font-size:9px;font-weight:800;display:grid;place-items:center;color:#12121c;background:${avc}">${avt}</span>
+        <span style="font-size:11px;color:var(--ink3);font-weight:600">${who} · ${p.day} ${p.date}${kind==='veto'?` · zu ${per.name.split(' ')[0]}`:''}</span>
+        <span style="margin-left:auto;font-size:9.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:${cf.col};background:${cf.bg};padding:3px 8px;border-radius:20px">${cf.lbl}</span></div>
       <div class="th">${p.theme}</div>
-      ${(!isRej&&s.chips.length)?`<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:7px">${s.chips.map(c=>`<span style="font-size:10px;font-weight:700;background:var(--yellow-dim);color:var(--yellow);padding:3px 8px;border-radius:20px">${c}</span>`).join('')}</div>`:''}
-      ${s.fbText?`<div class="note">${s.fbText.replace(/</g,'&lt;')}</div>`:`<div class="note" style="color:var(--ink3)">— ${isRej?'ohne Begründung':'kein Text'} —</div>`}
-      ${s.voice?'<div class="vn">🎤 Sprachnachricht liegt vor</div>':''}
+      ${(src.chips&&src.chips.length)?`<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:7px">${src.chips.map(ch=>`<span style="font-size:10px;font-weight:700;background:var(--yellow-dim);color:var(--yellow);padding:3px 8px;border-radius:20px">${ch}</span>`).join('')}</div>`:''}
+      ${src.fbText?`<div class="note">${src.fbText.replace(/</g,'&lt;')}</div>`:`<div class="note" style="color:var(--ink3)">— ohne Begründung —</div>`}
+      ${src.voice?'<div class="vn">🎤 Sprachnachricht liegt vor</div>':''}
     </div>`;
   }).join('');
 }
