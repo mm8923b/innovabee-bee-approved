@@ -408,7 +408,7 @@ button:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px
    <div class="hspace"></div>
    <div class="ptoggle" id="ptoggle">
      <button data-p="beide" class="active">Übersicht</button>
-     <button data-p="astrid"><span class="av" style="background:var(--violet)">A</span>Astrid<small>CI</small></button>
+     <button data-p="astrid"><span class="av" style="background:var(--violet)">AG</span>Astrid<small>CI</small></button>
      <button data-p="florian"><span class="av" style="background:var(--yellow)">FH</span>Florian</button>
      <button data-p="saskia"><span class="av" style="background:var(--teal)">SF</span>Saskia</button>
    </div>
@@ -511,7 +511,7 @@ const PILLARS = {
 const PEOPLE = {
   florian:{name:'Florian Häußler',role:'CEO · Innovabee | SAP-Klartext für den Mittelstand',av:'FH',avc:'var(--yellow)'},
   saskia:{name:'Saskia Fontanive-Kneese',role:'COO · Innovabee Gruppe | Customer Success & Kultur',av:'SF',avc:'var(--teal)'},
-  astrid:{name:'Astrid',role:'CI & Markenführung · Innovabee',av:'A',avc:'var(--violet)'}
+  astrid:{name:'Astrid Gonin-Schröer',role:'CI & Markenführung · Innovabee',av:'AG',avc:'var(--violet)'}
 };
 /* CI-Prüfpunkte (Astrids Checkliste) */
 const CI_CHECK=['Logo & Wortmarke','Farben (Navy · Gold · Blau)','Bildsprache','Tonalität im Rahmen'];
@@ -1106,7 +1106,7 @@ function renderPProg(){
   if(curPerson!=='beide'){el.style.display='none';el.innerHTML='';return;}
   el.style.display='flex';
   const ciDone=RAW.filter(p=>state[p.id].ci.status==='gruen').length, ciPct=Math.round(ciDone/RAW.length*100);
-  const ciBar=`<div class="pp"><div class="l"><span class="av" style="background:var(--violet)">A</span>Astrid · CI<span>${ciDone}/${RAW.length} CI-frei</span></div><div class="bar"><i style="width:${ciPct}%;background:var(--violet)"></i></div></div>`;
+  const ciBar=`<div class="pp"><div class="l"><span class="av" style="background:var(--violet)">AG</span>Astrid · CI<span>${ciDone}/${RAW.length} CI-frei</span></div><div class="bar"><i style="width:${ciPct}%;background:var(--violet)"></i></div></div>`;
   el.innerHTML=ciBar+['florian','saskia'].map(pk=>{
     const per=PEOPLE[pk], posts=RAW.filter(p=>p.p===pk);
     const done=posts.filter(p=>state[p.id].status==='gruen').length, pct=Math.round(done/posts.length*100);
@@ -1169,7 +1169,7 @@ function openModal(id){
   } else if(curPerson==='beide'){
     decisionHTML=`<div class="sect-l">Status</div>
       <div class="ov-status">
-        <div class="ov-row"><span class="av-mini" style="background:var(--violet)">A</span> CI-Freigabe (Astrid) <span class="stpill ${ci.status}">${statusLabel(ci.status)}</span></div>
+        <div class="ov-row"><span class="av-mini" style="background:var(--violet)">AG</span> CI-Freigabe (Astrid) <span class="stpill ${ci.status}">${statusLabel(ci.status)}</span></div>
         <div class="ov-row"><span class="av-mini" style="background:${per.avc}">${per.av}</span> Voice (${per.name.split(' ')[0]}) <span class="stpill ${s.status}">${statusLabel(s.status)}</span></div>
       </div>
       <div class="ov-hint">Zum Freigeben oben die Rolle wählen — <b>Astrid</b> prüft CI, dann <b>${per.name.split(' ')[0]}</b> die Stimme.</div>
