@@ -301,6 +301,69 @@ header{position:sticky;top:0;z-index:40;backdrop-filter:blur(18px);
 .drawer .dhd h3{font-size:16px;font-weight:800}
 .drawer .dhd .x{margin-left:auto;font-size:20px;color:var(--ink3);width:32px;height:32px;border-radius:9px;background:var(--panel)}
 .drawer .dbody{flex:1;overflow-y:auto;padding:18px 20px}
+/* linke Variante (Themen-Eingang) */
+.drawer.left{left:0;right:auto;border-left:none;border-right:1px solid var(--line2);transform:translateX(-105%);box-shadow:30px 0 80px -30px rgba(0,0,0,.8)}
+.drawer.left.open{transform:none}
+.th-fab{position:fixed;bottom:22px;left:22px;z-index:50;background:var(--yellow);color:#12121c;border:none;
+  padding:12px 18px;border-radius:14px;font-size:13.5px;font-weight:800;display:flex;align-items:center;gap:9px;cursor:pointer;
+  box-shadow:0 12px 30px -10px rgba(253,195,0,.7);transition:.16s}
+.th-fab:hover{transform:translateY(-2px);filter:brightness(1.04)}
+.th-fab .badge{background:#12121c;color:var(--yellow);font-size:11px;font-weight:800;min-width:20px;height:20px;border-radius:20px;display:grid;place-items:center;padding:0 6px}
+.th-intro{font-size:12.5px;color:var(--ink2);line-height:1.5;margin-bottom:14px}
+.th-modes{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:15px}
+.thmode{padding:9px 6px;border-radius:11px;background:var(--panel);border:1px solid var(--line);color:var(--ink2);font-size:12px;font-weight:700;cursor:pointer;transition:.14s;display:flex;flex-direction:column;align-items:center;gap:2px}
+.thmode:hover{border-color:var(--line2)}
+.thmode.active{background:var(--yellow-dim);border-color:rgba(253,195,0,.5);color:var(--gold-ink)}
+.th-form{display:flex;flex-direction:column;gap:9px;margin-bottom:6px}
+.th-lbl,.th-or{font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink3);font-weight:700}
+.th-or{text-align:center;margin:2px 0}
+.th-in{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:11px;padding:11px 12px;color:var(--ink);font-family:inherit;font-size:13px}
+select.th-in{cursor:pointer}
+.th-ta{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:11px;padding:11px 12px;color:var(--ink);font-family:inherit;font-size:13px;min-height:70px;resize:vertical;line-height:1.5}
+.th-in:focus,.th-ta:focus{outline:none;border-color:var(--yellow)}
+.th-in::placeholder,.th-ta::placeholder{color:var(--ink3)}
+.th-drop{display:block;border:1.5px dashed var(--line2);border-radius:14px;padding:20px;text-align:center;cursor:pointer;background:var(--panel);transition:.15s}
+.th-drop:hover{border-color:var(--yellow);background:var(--yellow-dim)}
+.th-drop #thDropInner{font-size:13px;font-weight:700;color:var(--ink2);display:flex;flex-direction:column;align-items:center;gap:4px}
+.th-drop #thDropInner span{font-size:11px;color:var(--ink3);font-weight:600}
+.th-thumb{max-width:100%;max-height:150px;border-radius:10px;margin-bottom:6px}
+.th-send{background:var(--yellow);color:#12121c;font-weight:800;padding:11px;border-radius:11px;font-size:13.5px;margin-top:4px;cursor:pointer;transition:.15s}
+.th-send:hover{filter:brightness(1.05)}
+.th-inbox-h{font-size:10.5px;text-transform:uppercase;letter-spacing:.11em;color:var(--ink3);font-weight:700;margin:20px 0 11px;border-top:1px solid var(--line);padding-top:16px;display:flex;justify-content:space-between}
+.th-empty{color:var(--ink3);font-size:12.5px;line-height:1.5;text-align:center;padding:16px 8px}
+.th-card{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--yellow);border-radius:12px;padding:12px 13px;margin-bottom:10px}
+.th-c-top{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.th-c-ic{font-size:14px}
+.th-c-by{font-size:11px;color:var(--ink3);font-weight:700}
+.th-c-x{margin-left:auto;color:var(--ink3);font-size:17px;width:24px;height:24px;border-radius:7px;background:var(--bg);cursor:pointer;line-height:1}
+.th-c-x:hover{color:var(--red)}
+.th-c-foto{width:100%;border-radius:9px;margin-bottom:7px;max-height:150px;object-fit:cover}
+.th-c-title{font-size:13.5px;font-weight:700;color:var(--ink);margin-bottom:3px}
+.th-c-text{font-size:12.5px;color:var(--ink2);line-height:1.5}
+/* ANLASS-RADAR */
+.radar{background:linear-gradient(135deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:16px;padding:15px 16px;margin:2px 0 16px;box-shadow:var(--shadow)}
+.radar-hd{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:13px}
+.radar-title{font-size:13.5px;font-weight:800;color:var(--ink)}
+.radar-title span{color:var(--ink3);font-weight:600;font-size:12px}
+.rtabs{display:flex;gap:5px;background:var(--bg);border:1px solid var(--line);border-radius:11px;padding:3px}
+.rtab{padding:6px 13px;border-radius:8px;font-size:12.5px;font-weight:700;color:var(--ink2);cursor:pointer;transition:.14s}
+.rtab.active{background:var(--yellow);color:#12121c}
+.radar-all{margin-left:auto;font-size:12px;color:var(--ink3);font-weight:600;display:flex;align-items:center;gap:6px;cursor:pointer}
+.radar-all input{accent-color:var(--yellow)}
+.rpills{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:10px}
+.rp-empty{color:var(--ink3);font-size:12.5px;padding:6px 2px}
+.rpill{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:12px 13px;display:flex;flex-direction:column;gap:7px;transition:.15s}
+.rpill.t-hoch{border-color:rgba(253,195,0,.45);box-shadow:inset 0 0 0 1px rgba(253,195,0,.12)}
+.rpill.t-fun{opacity:.62}
+.rpill.planned{border-color:rgba(62,207,142,.55);box-shadow:inset 0 0 0 1px rgba(62,207,142,.18)}
+.rp-top{display:flex;align-items:center;justify-content:space-between}
+.rp-date{font-size:12px;font-weight:800;color:var(--ink);letter-spacing:.02em}
+.rp-star{color:var(--yellow);font-size:13px}
+.rp-dot{width:8px;height:8px;border-radius:50%;background:var(--teal)}
+.rp-occ{font-size:12px;color:var(--ink2);line-height:1.4;font-weight:600;flex:1;min-height:34px}
+.rp-add{align-self:flex-start;font-size:11.5px;font-weight:800;color:var(--gold-ink);background:var(--yellow-dim);border:1px solid rgba(253,195,0,.32);padding:5px 11px;border-radius:9px;cursor:pointer;transition:.14s}
+.rp-add:hover{background:var(--yellow);color:#12121c}
+.rpill.planned .rp-add{color:var(--green);background:rgba(62,207,142,.14);border-color:rgba(62,207,142,.35)}
 .mc-item{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--orange);border-radius:12px;padding:13px;margin-bottom:11px}
 .mc-item .top{display:flex;align-items:center;gap:8px;margin-bottom:7px}
 .mc-item .th{font-size:12.5px;font-weight:600;line-height:1.3;margin-bottom:7px}
@@ -474,6 +537,8 @@ button:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px
    <div class="legend" id="legend"></div>
  </div>
 
+ <div class="radar" id="anlassRadar"></div>
+
  <div id="view"></div>
 
  <!-- PROCESS -->
@@ -505,6 +570,27 @@ button:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px
   <div class="dbody" id="mcBody"></div>
 </div>
 
+<!-- THEMEN-EINGANG FAB + DRAWER -->
+<button class="th-fab" onclick="toggleThemes(true)">➕ Thema einbringen <span class="badge" id="thBadge">0</span></button>
+<div class="drawer left" id="thDrawer">
+  <div class="dhd">
+    <h3>➕ Thema einbringen</h3>
+    <button class="x" onclick="toggleThemes(false)">×</button>
+  </div>
+  <div class="dbody">
+    <div class="th-intro">Bring dein Thema ins Board — wir bauen den Post daraus. Wähl den Weg, der dir am leichtesten fällt:</div>
+    <div class="th-modes" id="thModes">
+      <button class="thmode active" data-mode="text">📝 Text</button>
+      <button class="thmode" data-mode="voice">🎙️ Voice</button>
+      <button class="thmode" data-mode="foto">📷 Foto</button>
+      <button class="thmode" data-mode="anlass">📅 Anlass</button>
+    </div>
+    <div class="th-form" id="thForm"></div>
+    <div class="th-inbox-h">Eingebrachte Themen <span id="thCount">0</span></div>
+    <div id="thInbox"></div>
+  </div>
+</div>
+
 <!-- MODAL -->
 <div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">
   <div class="modal" id="modal"></div>
@@ -532,6 +618,125 @@ const PEOPLE = {
 };
 /* CI-Prüfpunkte (Astrids Checkliste) */
 const CI_CHECK=['Logo & Wortmarke','Farben (Navy · Gold · Blau)','Bildsprache','Tonalität im Rahmen'];
+const ANLASS=[
+{"d": "01.09.", "m": 9, "occ": "Antikriegstag / Meteorologischer Herbstbeginn", "t": "fun"},
+{"d": "02.09.", "m": 9, "occ": "Tag der Kokosnuss", "t": "fun"},
+{"d": "03.09.", "m": 9, "occ": "Tag der Erbsensuppe", "t": "fun"},
+{"d": "04.09.", "m": 9, "occ": "Tag der Currywurst", "t": "fun"},
+{"d": "05.09.", "m": 9, "occ": "Internationaler Tag der Wohltätigkeit / Tag der Käsepizza", "t": "fun"},
+{"d": "06.09.", "m": 9, "occ": "Landtagswahl Sachsen-Anhalt / Kämpfe-gegen-die-Prokrastination-Tag / Lies-ein-Buch-Tag / Tag der jüdischen Kultur", "t": "mittel", "a": "Lies-ein-Buch-Tag: Buchtipp zu KI/Führung"},
+{"d": "08.09.", "m": 9, "occ": "Weltalphabetisierungstag", "t": "mittel", "a": "Weltalphabetisierungstag: KI-Kompetenz & Weiterbildung"},
+{"d": "09.09.", "m": 9, "occ": "Teddybär-Tag", "t": "fun"},
+{"d": "10.09.", "m": 9, "occ": "Suizid-Präventionstag", "t": "fun"},
+{"d": "11.09.", "m": 9, "occ": "Patriot Day (9/11) / Tag der Wohnungslosen", "t": "fun"},
+{"d": "12.09.", "m": 9, "occ": "Tag der Ersten Hilfe", "t": "fun"},
+{"d": "13.09.", "m": 9, "occ": "Kommunalwahl Niedersachsen / Tag des offenen Denkmals", "t": "fun"},
+{"d": "14.09.", "m": 9, "occ": "Talk-about-cancer-day", "t": "fun"},
+{"d": "15.09.", "m": 9, "occ": "Internationaler Tag der Demokratie", "t": "fun"},
+{"d": "16.09.", "m": 9, "occ": "Tag der berufstätigen Eltern / Tag für die Erhaltung der Ozonschicht", "t": "hoch", "a": "Vereinbarkeit — Saskias Kernthema (C-Level + Familie)"},
+{"d": "17.09.", "m": 9, "occ": "Tag der Apfeltasche", "t": "fun"},
+{"d": "18.09.", "m": 9, "occ": "Tag des Respekts", "t": "mittel", "a": "Tag des Respekts: Führungskultur (Saskia)"},
+{"d": "19.09.", "m": 9, "occ": "Tag der Zivilcourage", "t": "fun"},
+{"d": "20.09.", "m": 9, "occ": "Wahl zum Abgeordnetenhaus Berlin / Landtagswahl Mecklenburg-Vorpommern / Deutscher Kindertag Thüringen", "t": "fun"},
+{"d": "21.09.", "m": 9, "occ": "Weltfriedenstag / Welttag der Dankbarkeit / Welt-Alzheimertag", "t": "fun"},
+{"d": "22.09.", "m": 9, "occ": "Autofreier Tag", "t": "fun"},
+{"d": "23.09.", "m": 9, "occ": "Herbstanfang / Internationaler Tag der Gebärdensprache", "t": "mittel", "a": "Tag der Gebärdensprache: Barrierefreiheit / BFSG"},
+{"d": "24.09.", "m": 9, "occ": "Welttag der Gorillas", "t": "fun"},
+{"d": "25.09.", "m": 9, "occ": "Tag der Zahngesundheit", "t": "fun"},
+{"d": "26.09.", "m": 9, "occ": "Internationaler Tag für die vollständige Beseitigung der Kernwaffen", "t": "fun"},
+{"d": "27.09.", "m": 9, "occ": "Tag der Gehörlosen / Welttourismustag", "t": "fun"},
+{"d": "28.09.", "m": 9, "occ": "Internationaler Tag des Rechts auf Wissen / Internationaler Tag der Informationsfreiheit", "t": "fun"},
+{"d": "29.09.", "m": 9, "occ": "Weltherztag", "t": "fun"},
+{"d": "30.09.", "m": 9, "occ": "Podcast-Tag", "t": "hoch", "a": "Podcast-Tag: Innovabee-Podcast (Phase 3) andocken / Format-Teaser"},
+{"d": "01.10.", "m": 10, "occ": "Tag des Kaffees / Weltmusiktag", "t": "fun"},
+{"d": "02.10.", "m": 10, "occ": "Internationaler Tag der Gewaltlosigkeit/ Tag des Obstbrandes", "t": "fun"},
+{"d": "03.10.", "m": 10, "occ": "Tag der Deutschen Einheit / Techie-Tag", "t": "hoch", "a": "Techie-Tag: Wertschätzung fürs Team hinter den SAP-Systemen"},
+{"d": "04.10.", "m": 10, "occ": "Erntedankfest / Europäischer Tag der Depression / Welttierschutztag", "t": "fun"},
+{"d": "05.10.", "m": 10, "occ": "Mach-etwas-Nettes-Tag", "t": "fun"},
+{"d": "06.10.", "m": 10, "occ": "Europäischer Tag der pflegenden Angehörigen", "t": "fun"},
+{"d": "07.10.", "m": 10, "occ": "Tag des Mineralwassers", "t": "fun"},
+{"d": "08.10.", "m": 10, "occ": "Welttag der Kraken / Welttag der Buchhandlungen", "t": "fun"},
+{"d": "09.10.", "m": 10, "occ": "Brandschutz-Tag", "t": "fun"},
+{"d": "10.10.", "m": 10, "occ": "Welthundetag / Internationaler Tag der seelischen Gesundheit", "t": "mittel", "a": "Seelische Gesundheit: Team mitnehmen in Change-Projekten"},
+{"d": "11.10.", "m": 10, "occ": "Tag des Schauspiels / Coming Out Day / Internationaler Mädchentag", "t": "fun"},
+{"d": "12.10.", "m": 10, "occ": "Internationaler Tag der Frustrationsschreie", "t": "fun"},
+{"d": "13.10.", "m": 10, "occ": "Internationaler Tag zur Verhinderung von Naturkatastrophen", "t": "fun"},
+{"d": "14.10.", "m": 10, "occ": "Welt-Normen-Tag / Tag des Desserts", "t": "hoch", "a": "Welt-Normen-Tag: Fit-to-Standard statt Sonderwege (Florians Kante)"},
+{"d": "15.10.", "m": 10, "occ": "Welttag des Händewaschens", "t": "fun"},
+{"d": "16.10.", "m": 10, "occ": "Welthungertag / Welttag des Brotes", "t": "fun"},
+{"d": "17.10.", "m": 10, "occ": "Internationaler Tag für die Beseitigung der Armut", "t": "fun"},
+{"d": "18.10.", "m": 10, "occ": "Welt-Menopausetag", "t": "fun"},
+{"d": "19.10.", "m": 10, "occ": "Evaluier-dein-Leben-Tag", "t": "fun"},
+{"d": "20.10.", "m": 10, "occ": "Tag der Allee", "t": "fun"},
+{"d": "21.10.", "m": 10, "occ": "Zähl-deine-Knöpfe-Tag", "t": "fun"},
+{"d": "22.10.", "m": 10, "occ": "Welttag des Stotterns", "t": "fun"},
+{"d": "24.10.", "m": 10, "occ": "Tag der Gewürze / Tag der Vereinten Nationen", "t": "fun"},
+{"d": "25.10.", "m": 10, "occ": "Beginn Winterzeit / Welttag der Nudeln / Welttag der Pizzabäcker / Zeitumstellung", "t": "mittel", "a": "Zeitumstellung: Zeit sparen durch Automatisierung/KI"},
+{"d": "26.10.", "m": 10, "occ": "Tag des Kürbis", "t": "fun"},
+{"d": "27.10.", "m": 10, "occ": "Welttag des audiovisuellen Erbes", "t": "fun"},
+{"d": "28.10.", "m": 10, "occ": "Welt-Konfetti-Tag", "t": "fun"},
+{"d": "29.10.", "m": 10, "occ": "Welt-Schlaganfall-Tag", "t": "fun"},
+{"d": "30.10.", "m": 10, "occ": "Weltspartag", "t": "hoch", "a": "Weltspartag: echter ROI von Cloud ERP — wenn Prozesse mitziehen"},
+{"d": "31.10.", "m": 10, "occ": "Reformationstag / Halloween", "t": "mittel", "a": "Halloween: ERP-Horror — Legacy-Altlasten & dreckige Daten (augenzwinkernd)"},
+{"d": "01.11.", "m": 11, "occ": "Allerheiligen", "t": "fun"},
+{"d": "02.11.", "m": 11, "occ": "Allerseelen", "t": "fun"},
+{"d": "03.11.", "m": 11, "occ": "Sandwich-Tag / Weltmännertag", "t": "fun"},
+{"d": "04.11.", "m": 11, "occ": "Tag der Süßigkeiten", "t": "fun"},
+{"d": "06.11.", "m": 11, "occ": "Tag des Basketballs", "t": "fun"},
+{"d": "07.11.", "m": 11, "occ": "Umarme-einen-Bären-Tag", "t": "fun"},
+{"d": "08.11.", "m": 11, "occ": "Weltschenktag", "t": "fun"},
+{"d": "09.11.", "m": 11, "occ": "Tag der Erfinder / Gedenktag an die Reichspogromnacht", "t": "hoch", "a": "Tag der Erfinder: Innovation & KI — Mut zum Anfangen"},
+{"d": "10.11.", "m": 11, "occ": "Vergissmeinnicht-Tag / Welttag der Wissenschaft für Frieden und Entwicklung", "t": "fun"},
+{"d": "11.11.", "m": 11, "occ": "Martinstag / Karnevalsauftakt in Köln", "t": "mittel", "a": "Karnevalsauftakt Köln: regionaler Gruß (923b)"},
+{"d": "12.11.", "m": 11, "occ": "Tag der schlechten Wortspiele", "t": "fun"},
+{"d": "13.11.", "m": 11, "occ": "Freitag, der 13. / Welt-Nettigkeitstag", "t": "fun"},
+{"d": "14.11.", "m": 11, "occ": "Welt-Diabetes-Tag", "t": "fun"},
+{"d": "15.11.", "m": 11, "occ": "Putz-Deinen-Kühlschrank-Tag / Welt-Gedenktag für die Straßenverkehrsopfer / Writers in Prison Day / Volkstrauertag", "t": "fun"},
+{"d": "16.11.", "m": 11, "occ": "Internationaler Tag für Toleranz", "t": "mittel", "a": "Tag für Toleranz: Unternehmenskultur & Diversität"},
+{"d": "17.11.", "m": 11, "occ": "Welt Frühgeborenen Tag", "t": "fun"},
+{"d": "18.11.", "m": 11, "occ": "Buß- und Bettag", "t": "fun"},
+{"d": "19.11.", "m": 11, "occ": "Internationaler Männertag / Tag der Suppe /  Welttag der Philosophie / Welttoilettentag", "t": "fun"},
+{"d": "20.11.", "m": 11, "occ": "Internationale Tag der Kinderrechte", "t": "fun"},
+{"d": "21.11.", "m": 11, "occ": "Welttag des Fernsehens / Welt-Hallo-Tag", "t": "fun"},
+{"d": "22.11.", "m": 11, "occ": "Totensonntag", "t": "fun"},
+{"d": "23.11.", "m": 11, "occ": "Tag des Espresso", "t": "fun"},
+{"d": "24.11.", "m": 11, "occ": "Tag der Gummistiefel / Tag der Heimlichkeiten", "t": "fun"},
+{"d": "25.11.", "m": 11, "occ": "Internationaler Tag zur Beseitigung von Gewalt gegen Frauen", "t": "fun"},
+{"d": "26.11.", "m": 11, "occ": "Thanksgiving", "t": "fun"},
+{"d": "27.11.", "m": 11, "occ": "Black Friday", "t": "mittel", "a": "Black Friday: Wert statt Rabatt-Denken bei ERP"},
+{"d": "28.11.", "m": 11, "occ": "Welttag der Barmherzigkeit", "t": "fun"},
+{"d": "29.11.", "m": 11, "occ": "1. Advent", "t": "mittel", "a": "1. Advent: ruhiger Jahresend-Ausblick"},
+{"d": "30.11.", "m": 11, "occ": "Cybermonday / Computer Security Day", "t": "hoch", "a": "Computer Security Day: SAP-/IT-Security + saubere Daten vor KI"},
+{"d": "01.12.", "m": 12, "occ": "Meteorologischer Winterbeginn / Welt-AIDS-Tag", "t": "fun"},
+{"d": "02.12.", "m": 12, "occ": "Internationaler Tag zur Abschaffung der Sklaverei / Tag des Spekulatius", "t": "fun"},
+{"d": "03.12.", "m": 12, "occ": "Internationaler Tag der Menschen mit Behinderung", "t": "mittel", "a": "Tag der Menschen mit Behinderung: Barrierefreiheit & Inklusion"},
+{"d": "04.12.", "m": 12, "occ": "Barbaratag", "t": "fun"},
+{"d": "05.12.", "m": 12, "occ": "Internationaler Tag des Ehrenamtes / Badewannen-Party-Tag", "t": "fun"},
+{"d": "06.12.", "m": 12, "occ": "Nikolaus / 2. Advent", "t": "mittel", "a": "Nikolaus / 2. Advent: festlicher Team-Gruß"},
+{"d": "07.12.", "m": 12, "occ": "Tag der Internationelen Zivilluftfahrt", "t": "fun"},
+{"d": "08.12.", "m": 12, "occ": "Mariä Empfängnis", "t": "fun"},
+{"d": "09.12.", "m": 12, "occ": "Welt-Anti-Korruptions-Tag", "t": "mittel", "a": "Anti-Korruptions-Tag: Compliance & KI-Governance"},
+{"d": "10.12.", "m": 12, "occ": "Tag der Menschenrechte / Tag des Christstollens", "t": "fun"},
+{"d": "11.12.", "m": 12, "occ": "Tag der Zimtsterne", "t": "fun"},
+{"d": "12.12.", "m": 12, "occ": "Internationaler Tag der allgemeinen Gesundheitsversorgung", "t": "fun"},
+{"d": "13.12.", "m": 12, "occ": "3. Advent / Worldwide Candle Lighting", "t": "fun"},
+{"d": "14.12.", "m": 12, "occ": "Affentag", "t": "fun"},
+{"d": "15.12.", "m": 12, "occ": "Cupcake-Tag", "t": "fun"},
+{"d": "16.12.", "m": 12, "occ": "Tag des Tannenzapfens", "t": "fun"},
+{"d": "17.12.", "m": 12, "occ": "Internationaler Tag gegen Gewalt an Sexarbeiter:innen", "t": "fun"},
+{"d": "18.12.", "m": 12, "occ": "Back-Kekse-Tag / Internationaler Tag der Migranten\nInternationaler Tag der Migranten / Back-Kekse-Tag", "t": "fun"},
+{"d": "19.12.", "m": 12, "occ": "Tag der Weihnachtskugeln", "t": "fun"},
+{"d": "20.12.", "m": 12, "occ": "4. Advent / Internationaler Tag der menschlichen Solidarität", "t": "fun"},
+{"d": "21.12.", "m": 12, "occ": "Tag des Kreuzworträtsels / Winteranfang", "t": "fun"},
+{"d": "22.12.", "m": 12, "occ": "Tag des Weihnachtsgebäcks", "t": "fun"},
+{"d": "24.12.", "m": 12, "occ": "Heiligabend", "t": "hoch", "a": "Weihnachtsgruß — menschlich, Dank an Team & Kunden"},
+{"d": "25.12.", "m": 12, "occ": "Erster Weihnachtsfeiertag", "t": "fun"},
+{"d": "26.12.", "m": 12, "occ": "Zweiter Weihnachtsfeiertag", "t": "fun"},
+{"d": "27.12.", "m": 12, "occ": "Macht-einen-Zoobesuch-Tag", "t": "fun"},
+{"d": "28.12.", "m": 12, "occ": "Tag des Kartenspielens / Tag des Rühreis / Ruf-einen-Freund-an-Tag", "t": "fun"},
+{"d": "29.12.", "m": 12, "occ": "Tick-Tack-Tag", "t": "fun"},
+{"d": "31.12.", "m": 12, "occ": "Silvester", "t": "hoch", "a": "Jahresrückblick 2026 + Ausblick 2027 (KI/Cloud ERP)"}
+];
 
 /* ============ POSTS ============ */
 const RAW = [
@@ -992,6 +1197,13 @@ function curFB(id){ return isVeto()?state[id].veto:state[id]; }
 
 let curPerson='beide', curView='cal', openId=null, bodyExpanded=false;
 const TRUNC=180;
+/* ===== Themen-Eingang + Anlass-Radar ===== */
+const LS_TOPICS='beeTopics_v1';
+let topics = JSON.parse(localStorage.getItem(LS_TOPICS)||'[]');
+function saveTopics(){localStorage.setItem(LS_TOPICS,JSON.stringify(topics));}
+let planMonth=9, radarAll=false, thMode='text', thFoto=null;
+const MONTHS={9:'September',10:'Oktober',11:'November',12:'Dezember'};
+function roleLabel(){ return curPerson==='astrid'?'Astrid':(curPerson==='florian'?'Florian':(curPerson==='saskia'?'Saskia':'Übersicht')); }
 function statusLabel(st){return {offen:'● Offen',gruen:'✓ Freigegeben',orange:'✎ In Korrektur',rot:'✕ Abgelehnt'}[st];}
 function resetDemo(){if(confirm('Alle Ampel-Stände & Rückmeldungen auf Ausgangszustand zurücksetzen?')){localStorage.removeItem(LS);location.reload();}}
 function bodyOf(p){return (state[p.id].ver>1 && p.v2)?p.v2:p.body;}
@@ -1151,6 +1363,134 @@ function renderPProg(){
 function render(){
   renderCockpit();renderLegend();renderGreet();renderPProg();
   document.getElementById('view').innerHTML = curView==='cal'?renderCalendar():renderBoard();
+  renderRadar();renderThemesBadge();
+}
+
+/* ============ ANLASS-RADAR (Jahresplan ab September) ============ */
+function renderRadar(){
+  const el=document.getElementById('anlassRadar'); if(!el) return;
+  if(curView!=='cal'){ el.style.display='none'; return; }
+  el.style.display='block';
+  const tabs=[9,10,11,12].map(m=>`<button class="rtab ${m===planMonth?'active':''}" onclick="setPlanMonth(${m})">${MONTHS[m]}</button>`).join('');
+  let days=ANLASS.filter(a=>a.m===planMonth);
+  if(!radarAll) days=days.filter(a=>a.t!=='fun');
+  const tierRank={hoch:0,mittel:1,fun:2};
+  days=days.slice().sort((a,b)=>{const c=tierRank[a.t]-tierRank[b.t]; return c!==0?c:a.d.localeCompare(b.d);});
+  const pills=days.map(a=>{
+    const planned=topics.some(t=>t.kind==='anlass'&&t.date===a.d);
+    return `<div class="rpill t-${a.t}${planned?' planned':''}" title="${(a.a||a.occ).replace(/"/g,'&quot;')}">
+      <div class="rp-top"><span class="rp-date">${a.d}</span>${a.t==='hoch'?'<span class="rp-star">★</span>':(a.t==='mittel'?'<span class="rp-dot"></span>':'')}</div>
+      <div class="rp-occ">${a.a?a.a:a.occ}</div>
+      <button class="rp-add" onclick="addAnlass('${a.d}',${JSON.stringify(a.a||a.occ).replace(/"/g,'&quot;')})">${planned?'✓ eingeplant':'＋ einplanen'}</button>
+    </div>`;
+  }).join('');
+  el.innerHTML=`
+    <div class="radar-hd">
+      <div class="radar-title">📅 Anlass-Radar <span>· Social-Media-Jahresplan</span></div>
+      <div class="rtabs">${tabs}</div>
+      <label class="radar-all"><input type="checkbox" ${radarAll?'checked':''} onchange="toggleRadarAll(this.checked)"> alle Tage</label>
+    </div>
+    <div class="rpills">${pills||'<div class="rp-empty">Keine relevanten Anlässe — „alle Tage" einblenden.</div>'}</div>`;
+}
+function setPlanMonth(m){ planMonth=m; renderRadar(); }
+function toggleRadarAll(v){ radarAll=v; renderRadar(); }
+function addAnlass(date,occ){
+  if(topics.some(t=>t.kind==='anlass'&&t.date===date)){ toast('Für diesen Anlass ist schon ein Thema eingeplant.','',2200); return; }
+  topics.unshift({kind:'anlass',date,occ,text:'',by:roleLabel()});
+  saveTopics(); render();
+  if(document.getElementById('thDrawer').classList.contains('open')) renderThemesInbox();
+  toast('📅 Anlass als Thema eingeplant — 923b baut den Post.','ok',2800);
+}
+
+/* ============ THEMEN-EINGANG ============ */
+function toggleThemes(open){
+  const d=document.getElementById('thDrawer');
+  if(open){ renderThemeForm(); renderThemesInbox(); }
+  else { stopRecIfAny(); }
+  d.classList.toggle('open',open);
+}
+function setThMode(m){ thMode=m; thFoto=null;
+  document.querySelectorAll('#thModes .thmode').forEach(b=>b.classList.toggle('active',b.dataset.mode===m));
+  renderThemeForm();
+}
+function renderThemeForm(){
+  const el=document.getElementById('thForm'); if(!el) return;
+  if(thMode==='text'){
+    el.innerHTML=`<input class="th-in" id="thTitle" placeholder="Titel / Kernidee (z. B. „Warum KI ohne saubere Daten scheitert")">
+      <textarea class="th-ta" id="thText" placeholder="Kurz beschreiben, worum es gehen soll …"></textarea>
+      <button class="th-send" onclick="submitTopic('text')">Thema senden →</button>`;
+  } else if(thMode==='voice'){
+    el.innerHTML=`<input class="th-in" id="thTitle" placeholder="Kurzer Titel (optional)">
+      <div class="voicebar" style="margin:2px 0 0">
+        <button class="recbtn" id="recBtn" onclick="toggleRec()"><span class="rd"></span><span id="recLbl">Voice aufnehmen</span></button>
+        <span class="trans-hint" id="transHint">📝 wird live transkribiert …</span>
+      </div>
+      <textarea class="th-ta" id="thText" placeholder="Sprich einfach los — dein Thema erscheint hier als Text (oder tippen)."></textarea>
+      <div class="voice-help">🎙️ Reinsprechen — wird direkt in Text umgewandelt.</div>
+      <button class="th-send" onclick="submitTopic('voice')">Thema senden →</button>`;
+  } else if(thMode==='foto'){
+    el.innerHTML=`<label class="th-drop" id="thDrop">
+        <input type="file" accept="image/*" id="thFile" onchange="onFoto(this)" hidden>
+        <div id="thDropInner">📷 Foto auswählen<span>Screenshot, Team-Bild, Situation …</span></div>
+      </label>
+      <input class="th-in" id="thTitle" placeholder="Worum geht's auf dem Bild? (kurzer Titel)">
+      <textarea class="th-ta" id="thText" placeholder="Kontext: was sollen wir daraus machen?"></textarea>
+      <button class="th-send" onclick="submitTopic('foto')">Thema senden →</button>`;
+  } else {
+    const opts=ANLASS.filter(a=>a.t!=='fun').map(a=>`<option value="${a.d}">${a.d} — ${a.occ}</option>`).join('');
+    el.innerHTML=`<div class="th-lbl">Anlass / Event</div>
+      <select class="th-in" id="thAnlassSel"><option value="">— relevanten Tag wählen —</option>${opts}</select>
+      <div class="th-or">oder freies Datum</div>
+      <input class="th-in" id="thDate" placeholder="z. B. 17.09. — Kundenevent XY">
+      <textarea class="th-ta" id="thText" placeholder="Was ist der Anlass? Was soll der Post transportieren?"></textarea>
+      <button class="th-send" onclick="submitTopic('anlass')">Post einplanen →</button>`;
+  }
+}
+function onFoto(inp){
+  const f=inp.files&&inp.files[0]; if(!f) return;
+  const rd=new FileReader();
+  rd.onload=e=>{ thFoto=e.target.result;
+    const d=document.getElementById('thDropInner');
+    if(d) d.innerHTML=`<img src="${thFoto}" class="th-thumb"><span>Foto ausgewählt ✓ — anderes wählen</span>`;
+  };
+  rd.readAsDataURL(f);
+}
+function submitTopic(kind){
+  stopRecIfAny();
+  const g=id=>document.getElementById(id);
+  const title=g('thTitle')?g('thTitle').value.trim():'';
+  const text=g('thText')?g('thText').value.trim():'';
+  let t={kind,by:roleLabel(),title,text};
+  if(kind==='foto'){ if(!thFoto&&!text&&!title){ toast('Bitte ein Foto wählen oder etwas beschreiben.','',2400); return;} t.foto=thFoto; }
+  if(kind==='anlass'){
+    const sel=g('thAnlassSel')?g('thAnlassSel').value:''; const free=g('thDate')?g('thDate').value.trim():'';
+    const date=sel||free; if(!date&&!text){ toast('Bitte Anlass/Datum wählen oder beschreiben.','',2400); return; }
+    let occ=text; if(sel){ const a=ANLASS.find(x=>x.d===sel); occ=(a&&(a.a||a.occ))||text; }
+    t.date=date; t.occ=occ;
+  } else if(!title&&!text&&!t.foto){ toast('Bitte kurz beschreiben, worum es geht.','',2400); return; }
+  topics.unshift(t); saveTopics(); thFoto=null;
+  renderThemeForm(); renderThemesInbox(); render();
+  toast('✅ Thema eingebracht — landet bei 923b.','ok',2800);
+}
+function delTopic(i){ topics.splice(i,1); saveTopics(); renderThemesInbox(); render(); }
+function renderThemesBadge(){
+  const b=document.getElementById('thBadge'); if(b){ b.textContent=topics.length; b.style.opacity=topics.length?'1':'.45'; }
+}
+function renderThemesInbox(){
+  const el=document.getElementById('thInbox'); const c=document.getElementById('thCount');
+  if(c) c.textContent=topics.length;
+  if(!el) return;
+  if(!topics.length){ el.innerHTML='<div class="th-empty">Noch keine Themen. Bring dein erstes ein — Text, Voice, Foto oder Anlass.</div>'; return; }
+  const ic={text:'📝',voice:'🎙️',foto:'📷',anlass:'📅'};
+  el.innerHTML=topics.map((t,i)=>`<div class="th-card">
+    <div class="th-c-top"><span class="th-c-ic">${ic[t.kind]||'📝'}</span>
+      <span class="th-c-by">${t.by}${t.kind==='anlass'&&t.date?' · '+t.date:''}</span>
+      <button class="th-c-x" onclick="delTopic(${i})" title="Entfernen">×</button></div>
+    ${t.foto?`<img src="${t.foto}" class="th-c-foto">`:''}
+    ${t.title?`<div class="th-c-title">${t.title.replace(/</g,'&lt;')}</div>`:''}
+    ${(t.occ&&t.kind==='anlass')?`<div class="th-c-title">${t.occ.replace(/</g,'&lt;')}</div>`:''}
+    ${t.text?`<div class="th-c-text">${t.text.replace(/</g,'&lt;')}</div>`:''}
+  </div>`).join('');
 }
 
 /* ============ MODAL ============ */
@@ -1407,6 +1747,7 @@ function approveAll(){
 let mediaRec=null, chunks=[], recTimer=null, recSec=0, recognition=null, recActive=false, transcriptBase='';
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 
+function voiceTA(){ const th=document.getElementById('thDrawer'); if(th&&th.classList.contains('open')) return document.getElementById('thText'); return document.getElementById('fbText'); }
 function toggleRec(){ if(recActive) stopRecIfAny(); else startRec(); }
 
 function startRec(){
@@ -1420,8 +1761,8 @@ function startRec(){
 
   if(SR){
     // Live-Transkription — Worte erscheinen direkt im Feedback-Feld
-    document.getElementById('transHint').classList.add('on');
-    const ta=document.getElementById('fbText');
+    const th=document.getElementById('transHint'); if(th)th.classList.add('on');
+    const ta=voiceTA(); if(!ta){ return; }
     transcriptBase=(ta.value||'').trim();
     let finalText='';
     recognition=new SR();
@@ -1458,7 +1799,7 @@ function startMediaOnly(){ // Audio-Aufnahme ohne Transkript (Fallback)
 }
 
 function fakeVoice(){ // weder Mikro noch Speech-API
-  curFB(openId).voice=true;save();render();
+  if(openId){ curFB(openId).voice=true;save();render(); }
   const vl=document.getElementById('voiceLbl'); if(vl)vl.textContent='Sprachnachricht (Demo)';
   const vo=document.getElementById('voiceOut'); if(vo)vo.classList.add('show');
   alert('Mikrofon/Transkription in diesem Browser nicht verfügbar — im Live-System läuft die Aufnahme + Transkription serverseitig (Whisper/ElevenLabs).');
@@ -1546,6 +1887,10 @@ document.getElementById('vtabs').addEventListener('click',e=>{
   curView=b.dataset.v;
   document.querySelectorAll('#vtabs button').forEach(x=>x.classList.remove('active'));
   b.classList.add('active');render();
+});
+document.getElementById('thModes').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  setThMode(b.dataset.mode);
 });
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape')closeModal();
