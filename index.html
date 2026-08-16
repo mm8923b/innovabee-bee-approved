@@ -161,6 +161,31 @@ header{position:sticky;top:0;z-index:40;backdrop-filter:blur(18px);
 .kanban.draggable .kcard:active{cursor:grabbing}
 .kcard.dragging{opacity:.45;transform:scale(.98)}
 .kcol.drop-hover{outline:2px dashed var(--yellow);outline-offset:-3px;background:var(--yellow-dim)}
+.day.drop-hover{outline:2px dashed var(--yellow);outline-offset:-2px;background:var(--yellow-dim)}
+.cal-grid .pcard[draggable]{cursor:grab}
+.cal-grid .pcard[draggable]:active{cursor:grabbing}
+.pcard.dragging{opacity:.45}
+/* GEO-Tipps */
+.geo-tips{background:rgba(255,159,69,.08);border:1px solid rgba(255,159,69,.28);border-radius:12px;padding:10px 12px;margin:2px 0 14px}
+.geo-tips-h{font-size:11px;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.geo-tip{font-size:12px;color:var(--ink2);line-height:1.45;margin-bottom:3px}
+.geo-allok{font-size:12px;color:var(--green);font-weight:700;margin:2px 0 14px}
+/* Inline-Edit */
+.edit-wrap{margin-bottom:10px}
+.edit-btn{font-size:12px;font-weight:700;color:var(--ink);background:var(--panel2);border:1px solid var(--line2);padding:7px 13px;border-radius:10px;cursor:pointer}
+.edit-btn:hover{border-color:var(--yellow)}
+.edit-box{margin-top:9px}
+.edit-box textarea{width:100%;min-height:200px;background:var(--bg);border:1px solid var(--line2);border-radius:11px;padding:12px;color:var(--ink);font-family:inherit;font-size:13px;line-height:1.55;resize:vertical}
+.edit-box textarea:focus{outline:none;border-color:var(--yellow)}
+.edit-actions{display:flex;gap:8px;margin-top:8px}
+.edit-save{background:var(--yellow);color:#12121c;font-weight:800;font-size:12.5px;padding:9px 15px;border-radius:10px;cursor:pointer}
+.edit-cancel{background:var(--panel);border:1px solid var(--line);color:var(--ink2);font-weight:700;font-size:12.5px;padding:9px 15px;border-radius:10px;cursor:pointer}
+/* Bild anhängen */
+.attach{display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.attach-btn{font-size:11.5px;font-weight:700;color:var(--ink2);background:var(--panel);border:1px dashed var(--line2);padding:7px 13px;border-radius:10px;cursor:pointer;transition:.14s}
+.attach-btn:hover{border-color:var(--yellow);color:var(--ink)}
+.attach-btn.del{border-style:solid;color:var(--ink3)}
+.attach-btn.del:hover{color:var(--red);border-color:var(--red)}
 .kcard:hover{border-color:var(--line2);transform:translateY(-2px);box-shadow:var(--shadow)}
 .kcard .kt{font-size:13px;font-weight:600;line-height:1.35;margin-bottom:9px}
 .kcard .kmeta{display:flex;align-items:center;gap:8px}
@@ -859,13 +884,13 @@ function geoScore(p){
   const firstShort=first.length<=300;
   const c=[];
   const len = chars>=1300&&chars<=1900 ? 20 : (chars>=500&&chars<=3000 ? 11 : 4);
-  c.push({ok:chars>=1300&&chars<=1900, w:'len', label:`${chars} Zeichen`, hint:'Sweet Spot 1.300 bis 1.900'});
-  const hook = first.length<=210 && first.length>0; c.push({ok:hook,w:15,label:'Hook vor „…mehr"'});
-  c.push({ok:hasList,w:20,label:'Struktur / Liste'});
-  const entOk=hasNum&&ents>=2; c.push({ok:entOk,w:20,label:'Fakten & Entitäten'});
-  c.push({ok:firstShort,w:10,label:'Kernaussage in Satz 1 bis 3'});
-  const tagOk=hCount>=3&&hCount<=5; c.push({ok:tagOk,w:10,label:`${hCount} Hashtags`});
-  c.push({ok:!hasLink,w:5,label:'Kein Link im Text'});
+  c.push({ok:chars>=1300&&chars<=1900, label:`${chars} Zeichen`, tip: chars<1300?`Noch ${1300-chars} Zeichen bis zum Sweet Spot (1.300 bis 1.900). Ein konkretes Beispiel oder eine kurze Liste ergänzen.`:`${chars-1900} Zeichen über dem Sweet Spot. Etwas straffen.`});
+  const hook = first.length<=210 && first.length>0; c.push({ok:hook,label:'Hook vor „…mehr"',tip:'Erste Zeile auf unter 210 Zeichen kürzen, damit der Hook vor „…mehr" komplett sichtbar ist.'});
+  c.push({ok:hasList,label:'Struktur / Liste',tip:'Eine Aufzählung mit 👉 einbauen. Listen sind laut Leitfaden der stärkste Hebel für KI-Zitierbarkeit.'});
+  const entOk=hasNum&&ents>=2; c.push({ok:entOk,label:'Fakten & Entitäten',tip:'Eine konkrete Zahl und mind. zwei ausgeschriebene Entitäten nennen (z. B. SAP, S/4HANA, PPWR).'});
+  c.push({ok:firstShort,label:'Kernaussage in Satz 1 bis 3',tip:'Die Kernbotschaft in die ersten zwei bis drei Sätze ziehen (Standalone-Antwort für KI).'});
+  const tagOk=hCount>=3&&hCount<=5; c.push({ok:tagOk,label:`${hCount} Hashtags`,tip:'Auf 3 bis 5 Hashtags bringen.'});
+  c.push({ok:!hasLink,label:'Kein Link im Text',tip:'Externen Link aus dem Text nehmen und in den 1. Kommentar setzen (bis zu 60 % mehr Reichweite).'});
   let s=len;
   s+= hook?15:0; s+= hasList?20:0; s+= entOk?20:0; s+= firstShort?10:0; s+= tagOk?10:0; s+= !hasLink?5:0;
   const label = s>=85?'stark':(s>=65?'solide':'ausbaufähig');
@@ -891,7 +916,23 @@ const MONTHS={9:'September',10:'Oktober',11:'November',12:'Dezember'};
 function roleLabel(){ return curPerson==='astrid'?'Astrid':(curPerson==='florian'?'Florian':(curPerson==='saskia'?'Saskia':'Übersicht')); }
 function statusLabel(st){return {offen:'● Offen',gruen:'✓ Freigegeben',orange:'✎ In Korrektur',rot:'✕ Abgelehnt'}[st];}
 function resetDemo(){if(confirm('Alle Ampel-Stände & Rückmeldungen auf Ausgangszustand zurücksetzen?')){localStorage.removeItem(LS);location.reload();}}
-function bodyOf(p){return (state[p.id].ver>1 && p.v2)?p.v2:p.body;}
+function bodyOf(p){
+  const vs=state[p.id]&&state[p.id].versions;
+  if(vs&&vs.length) return vs[vs.length-1].body;
+  return (state[p.id].ver>1 && p.v2)?p.v2:p.body;
+}
+function openEdit(id){ const p=RAW.find(x=>x.id===id); const ta=document.getElementById('editArea'); if(ta)ta.value=bodyOf(p); const eb=document.getElementById('editBox'); if(eb)eb.style.display='block'; const bt=document.getElementById('editTrigger'); if(bt)bt.style.display='none'; }
+function cancelEdit(){ const eb=document.getElementById('editBox'); if(eb)eb.style.display='none'; const bt=document.getElementById('editTrigger'); if(bt)bt.style.display=''; }
+function saveEdit(id){
+  const p=RAW.find(x=>x.id===id); const nv=(document.getElementById('editArea').value||'').trim(); if(!nv){cancelEdit();return;}
+  if(nv===bodyOf(p)){ cancelEdit(); return; }
+  if(!state[id].versions||!state[id].versions.length){ state[id].versions=[{v:1,body:(state[id].ver>1&&p.v2)?p.v2:p.body,by:'Original',ts:''}]; }
+  const v=state[id].versions.length+1;
+  state[id].versions.push({v,body:nv,by:roleLabel(),ts:nowStr()});
+  state[id].ver=v;
+  logHist(id,'Text bearbeitet (V'+v+')'); save(); openModal(id);
+  toast('✏️ Neue Version V'+v+' gespeichert.','ok',2600);
+}
 let toastTimer=null;
 function toast(msg,kind,ms){const t=document.getElementById('toast');t.className='';t.innerHTML=msg;void t.offsetWidth;t.classList.add('show');if(kind)t.classList.add(kind);clearTimeout(toastTimer);if(ms!==0)toastTimer=setTimeout(()=>t.classList.remove('show'),ms||2600);}
 function navPost(dir){
@@ -917,6 +958,18 @@ function visiblePosts(){
   if(q) list=list.filter(p=>((p.theme||'')+' '+(p.body||'')+' '+(p.tags||'')).toLowerCase().includes(q));
   if(statusFilter!=='all') list=list.filter(p=> statusFilter==='veto' ? vetoed(p.id) : state[p.id].status===statusFilter);
   return list;
+}
+/* Umplanen: Datums-Raster + Overrides je Post */
+const DATEMAP={1:{Di:'01.09.',Mi:'02.09.',Do:'03.09.'},2:{Di:'08.09.',Mi:'09.09.',Do:'10.09.'},3:{Di:'15.09.',Mi:'16.09.',Do:'17.09.'},4:{Di:'22.09.',Mi:'23.09.',Do:'24.09.'}};
+function pWk(p){ return (state[p.id].sched&&state[p.id].sched.wk)||p.wk; }
+function pDay(p){ return (state[p.id].sched&&state[p.id].sched.day)||p.day; }
+function calDrop(e,w,d){
+  e.preventDefault(); e.currentTarget.classList.remove('drop-hover');
+  const id=dragId||(e.dataTransfer&&e.dataTransfer.getData('text/plain')); dragId=null;
+  if(!id||!state[id]) return;
+  const date=(DATEMAP[w]&&DATEMAP[w][d])||'';
+  state[id].sched={wk:w,day:d,date}; logHist(id,`umgeplant auf Woche ${w}, ${d} (${date})`); save(); render();
+  toast('🗓️ Umgeplant auf '+d+' '+date,'ok',1900);
 }
 function fmtBody(txt){
   return txt.replace(/&/g,'&amp;').replace(/</g,'&lt;')
@@ -982,19 +1035,20 @@ function renderLegend(){
 /* ============ RENDER CALENDAR ============ */
 function renderCalendar(){
   const ps=visiblePosts();
+  const drag = curPerson!=='beide';
   let html='';
   for(let w=1;w<=4;w++){
     const days=['Di','Mi','Do'];
     html+=`<div class="cal-week"><div class="wk">Woche ${w}</div><div class="cal-grid">`;
     days.forEach(d=>{
-      const dayPosts=ps.filter(p=>p.wk===w&&p.day===d);
-      const date=dayPosts[0]?dayPosts[0].date:'';
-      html+=`<div class="day${dayPosts.length?'':' empty'}">
+      const dayPosts=ps.filter(p=>pWk(p)===w&&pDay(p)===d);
+      const date=(DATEMAP[w]&&DATEMAP[w][d])||'';
+      html+=`<div class="day${dayPosts.length?'':' empty'}" ${drag?`ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="calDrop(event,${w},'${d}')"`:''}>
         <div class="dh"><span class="dd">${d}${date?' · '+date:''}</span><span class="dt">LinkedIn</span></div>`;
       dayPosts.forEach(p=>{
         const pl=pill(p),st=actStatus(p.id);
         const vflag = vetoed(p.id);
-        html+=`<div class="pcard${vflag?' vetoed':''}" style="border-left-color:${pl.c}" onclick="openModal('${p.id}')">
+        html+=`<div class="pcard${vflag?' vetoed':''}" style="border-left-color:${pl.c}" ${drag?`draggable="true" ondragstart="dragStart(event,'${p.id}')" ondragend="dragEnd(event)"`:''} onclick="openModal('${p.id}')">
           <span class="amp ${st}"></span>
           ${curPerson==='beide'?`<div class="who"><span class="av" style="background:${PEOPLE[p.p].avc}">${PEOPLE[p.p].av}</span>${PEOPLE[p.p].name.split(' ')[0]}${vflag?'<span class="ci-tick veto" title="Astrid-Veto">⚠ Veto</span>':''}</div>`:''}
           <div class="th">${p.draft?'<span class="draft-badge">Entwurf</span> ':''}${p.theme}</div>
@@ -1226,7 +1280,8 @@ function openModal(id){
       <div class="geo-badge" style="--gc:${geo.col}"><b>${geo.score}</b><span>GEO /100</span></div>
       <div class="geo-lbl" style="color:${geo.col}">${geo.label}</div>
     </div>
-    <div class="licheck">${geo.checks.map(c=>lc(c.ok,c.label)).join('')}</div>`;
+    <div class="licheck">${geo.checks.map(c=>lc(c.ok,c.label)).join('')}</div>
+    ${geo.checks.some(c=>!c.ok)?`<div class="geo-tips"><div class="geo-tips-h">So hebst du den Score:</div>${geo.checks.filter(c=>!c.ok).map(c=>`<div class="geo-tip">→ ${c.tip}</div>`).join('')}</div>`:'<div class="geo-allok">✓ Alle Leitfaden-Kriterien erfüllt.</div>'}`;
 
   /* ===== Rollen-abhängige Bausteine: Florian/Saskia = C-Level-Freigabe (primär) · Astrid = Veto (nachgelagert) · Übersicht = read-only ===== */
   const vetoBadge = vetoed(id)?'<span class="ci-badge ci-rot">⚠ Veto (Astrid)</span>':'';
@@ -1297,12 +1352,18 @@ function openModal(id){
   // ===== Verlauf + Versions-Diff + Kommentare =====
   const hist=state[id].history||[];
   const histHTML = hist.length?`<div class="sect-l">Verlauf</div><div class="hist">${hist.slice().reverse().map(h=>`<div class="hi"><span class="hi-b">${h.by}</span> ${h.action}${h.note?`: „${h.note.replace(/</g,'&lt;')}"`:''}<span class="hi-t">${h.ts}</span></div>`).join('')}</div>`:'';
-  const verHTML = p.v2?`<div class="sect-l">Versionen</div><div class="verbar"><span class="verpill">V1 Original</span><span class="verpill v2">V2 überarbeitet</span><button class="verdiff-btn" onclick="toggleDiff('${id}')">Diff anzeigen</button></div><div class="verdiff" id="verdiff" style="display:none"></div>`:'';
+  const vlist = (state[id].versions&&state[id].versions.length>1) ? state[id].versions.map(x=>({v:x.v,orig:x.v===1})) : (p.v2?[{v:1,orig:true},{v:2,orig:false}]:[]);
+  const verHTML = vlist.length?`<div class="sect-l">Versionen</div><div class="verbar">${vlist.map(x=>`<span class="verpill${x.orig?'':' v2'}">V${x.v}${x.orig?' Original':''}</span>`).join('')}<button class="verdiff-btn" onclick="toggleDiff('${id}')">Diff anzeigen</button></div><div class="verdiff" id="verdiff" style="display:none"></div>`:'';
+  const editHTML = `<div class="edit-wrap"><button class="edit-btn" id="editTrigger" onclick="openEdit('${id}')">✏️ Text bearbeiten</button>
+    <div class="edit-box" id="editBox" style="display:none">
+      <textarea id="editArea"></textarea>
+      <div class="edit-actions"><button class="edit-save" onclick="saveEdit('${id}')">Neue Version speichern</button><button class="edit-cancel" onclick="cancelEdit()">Abbrechen</button></div>
+    </div></div>`;
   const cmts=state[id].comments||[];
   const cmtHTML=`<div class="sect-l">Kommentare${cmts.length?` · ${cmts.length}`:''}</div>
     <div class="cmts">${cmts.length?cmts.map(c=>`<div class="cmt"><div class="cmt-h"><span class="cmt-b">${c.by}</span><span class="cmt-t">${c.ts}</span></div><div class="cmt-x">${c.text.replace(/</g,'&lt;')}</div></div>`).join(''):'<div class="cmt-empty">Noch keine Kommentare. Notiz fürs Team hinterlassen.</div>'}</div>
     <div class="cmt-add"><textarea id="cmtInput" placeholder="Kommentar an Team / 923b …"></textarea><button class="cmt-send" onclick="addComment()">Senden</button></div>`;
-  const threadHTML=`<div class="thread">${verHTML}${histHTML}${cmtHTML}</div>`;
+  const threadHTML=`<div class="thread">${editHTML}${verHTML}${histHTML}${cmtHTML}</div>`;
 
   document.getElementById('modal').innerHTML=`
     <button class="close" onclick="closeModal()">×</button>
@@ -1322,9 +1383,9 @@ function openModal(id){
                 </div>
               </div>
               <div class="li-body" id="liBody">${fmtBody(shortBody)}${isLong?'<span class="li-more" onclick="toggleBody()"> …mehr</span>':''}</div>
-              ${p.photo
-                ? `<div class="li-photo"><img src="${p.photo}" alt="">
-                     <div class="fmtbadge photo">${fmtIcon(p.fmt)} ${p.fmt}</div>
+              ${(state[id].image||p.photo)
+                ? `<div class="li-photo"><img src="${state[id].image||p.photo}" alt="">
+                     <div class="fmtbadge photo">${fmtIcon(p.fmt)} ${state[id].image?'Bild':p.fmt}</div>
                    </div>`
                 : `<div class="li-media" style="--acc:${pl.c}">
                      <div class="fmtbadge">${fmtIcon(p.fmt)} ${p.fmt}</div>
@@ -1345,6 +1406,11 @@ function openModal(id){
         </div>
       </div>
       <div class="mock-note">${mediaNote(p.fmt)}</div>
+      <div class="attach">
+        <input type="file" accept="image/*" id="imgFile" onchange="onImgUpload('${id}',this)" hidden>
+        <button class="attach-btn" onclick="document.getElementById('imgFile').click()">📎 ${state[id].image?'Bild ersetzen':'Bild / Carousel anhängen'}</button>
+        ${state[id].image?`<button class="attach-btn del" onclick="removeImg('${id}')">Entfernen</button>`:''}
+      </div>
     </div>
 
     <div class="det">
@@ -1393,6 +1459,9 @@ function closeModal(){
   document.body.style.overflow='';
   openId=null;
 }
+function resizeImg(dataUrl,maxW,cb){ const img=new Image(); img.onload=()=>{ const sc=Math.min(1,maxW/img.width); const w=Math.round(img.width*sc),h=Math.round(img.height*sc); const cv=document.createElement('canvas'); cv.width=w; cv.height=h; cv.getContext('2d').drawImage(img,0,0,w,h); cb(cv.toDataURL('image/jpeg',0.82)); }; img.onerror=()=>cb(dataUrl); img.src=dataUrl; }
+function onImgUpload(id,inp){ const f=inp.files&&inp.files[0]; if(!f) return; const rd=new FileReader(); rd.onload=e=>{ resizeImg(e.target.result,900,url=>{ try{ state[id].image=url; logHist(id,'Bild angehängt'); save(); openModal(id); toast('📎 Bild angehängt.','ok',2000); }catch(err){ toast('Bild zu groß für den Demo-Speicher. Im Live-System kein Problem.','',3000); } }); }; rd.readAsDataURL(f); }
+function removeImg(id){ delete state[id].image; logHist(id,'Bild entfernt'); save(); openModal(id); }
 function addComment(){
   const t=document.getElementById('cmtInput'); if(!t) return;
   const v=(t.value||'').trim(); if(!v) return;
@@ -1401,8 +1470,10 @@ function addComment(){
 }
 function toggleDiff(id){
   const el=document.getElementById('verdiff'); if(!el) return;
-  const p=RAW.find(x=>x.id===id); if(!p||!p.v2){el.style.display='none';return;}
-  if(el.style.display==='none'){ el.innerHTML=lineDiff(p.body,p.v2); el.style.display='block'; }
+  const p=RAW.find(x=>x.id===id);
+  const vs=(state[id].versions&&state[id].versions.length>1)?state[id].versions.map(x=>x.body):(p.v2?[p.body,p.v2]:null);
+  if(!vs){el.style.display='none';return;}
+  if(el.style.display==='none'){ el.innerHTML=lineDiff(vs[vs.length-2],vs[vs.length-1]); el.style.display='block'; }
   else el.style.display='none';
 }
 function lineDiff(a,b){
