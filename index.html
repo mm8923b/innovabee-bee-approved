@@ -113,6 +113,15 @@ header{position:sticky;top:0;z-index:40;backdrop-filter:blur(18px);
 .vtabs button{padding:9px 17px;border-radius:8px;font-size:13.5px;font-weight:600;color:var(--ink2);transition:.16s;display:flex;align-items:center;gap:7px}
 .vtabs button.active{background:var(--yellow);color:#12121c;font-weight:700}
 .legend{display:flex;gap:13px;flex-wrap:wrap;margin-left:auto;align-items:center}
+.tb-filter{display:flex;gap:8px;align-items:center}
+.tb-search{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 12px;color:var(--ink);font-family:inherit;font-size:12.5px;width:230px;max-width:44vw}
+.tb-search:focus{outline:none;border-color:var(--yellow)}
+.tb-search::placeholder{color:var(--ink3)}
+.tb-sel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 10px;color:var(--ink2);font-family:inherit;font-size:12.5px;cursor:pointer}
+.tb-sel:focus{outline:none;border-color:var(--yellow)}
+.th-draft{width:100%;margin-top:9px;background:var(--panel2);border:1px solid var(--line2);color:var(--ink);font-weight:700;font-size:12px;padding:8px;border-radius:9px;cursor:pointer;transition:.15s}
+.th-draft:hover{background:var(--yellow);color:#12121c;border-color:var(--yellow)}
+.draft-badge{display:inline-block;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:#12121c;background:var(--yellow);padding:1px 6px;border-radius:6px;vertical-align:middle}
 .legend .li{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink2);font-weight:600}
 .legend .li i{width:10px;height:10px;border-radius:3px;display:inline-block}
 
@@ -424,6 +433,41 @@ button:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px
 .lc{font-size:11px;font-weight:600;padding:5px 10px;border-radius:20px;display:inline-flex;align-items:center;gap:5px;background:var(--panel);border:1px solid var(--line);color:var(--ink2)}
 .lc.ok{color:var(--green);border-color:rgba(62,207,142,.3);background:rgba(62,207,142,.08)}
 .lc.warn{color:var(--orange);border-color:rgba(255,159,69,.3);background:rgba(255,159,69,.08)}
+/* GEO-Score */
+.geo-row{display:flex;align-items:center;gap:14px;margin:2px 0 10px}
+.geo-badge{width:64px;height:64px;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:color-mix(in srgb, var(--gc) 14%, transparent);border:1.5px solid var(--gc);flex-shrink:0}
+.geo-badge b{font-size:24px;font-weight:800;line-height:1;color:var(--gc)}
+.geo-badge span{font-size:8.5px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
+.geo-lbl{font-size:14px;font-weight:800;text-transform:capitalize}
+.geo-help{font-size:11px;color:var(--ink3);cursor:help;font-weight:400}
+/* Thread: Verlauf + Versionen + Kommentare */
+.thread{margin-top:8px;border-top:1px solid var(--line);padding-top:6px}
+.hist{display:flex;flex-direction:column;gap:5px;margin-bottom:8px}
+.hi{font-size:11.5px;color:var(--ink2);line-height:1.45;background:var(--panel);border-radius:9px;padding:6px 10px;border-left:2px solid var(--line2)}
+.hi-b{font-weight:800;color:var(--ink)}
+.hi-t{color:var(--ink3);font-size:10px;margin-left:6px}
+.verbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.verpill{font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;background:var(--panel);border:1px solid var(--line);color:var(--ink2)}
+.verpill.v2{color:var(--green);border-color:rgba(62,207,142,.35);background:rgba(62,207,142,.1)}
+.verdiff-btn{font-size:11px;font-weight:700;color:var(--gold-ink);background:var(--yellow-dim);border:1px solid rgba(253,195,0,.3);padding:4px 11px;border-radius:9px;cursor:pointer}
+.verdiff{margin-bottom:10px}
+.diffgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.diffgrid .dh{font-size:9.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink3);font-weight:800;margin-bottom:5px}
+.dl{font-size:11px;line-height:1.4;padding:3px 7px;border-radius:6px;margin-bottom:3px;color:var(--ink2);background:var(--panel)}
+.dl.del{color:var(--red);background:rgba(255,93,108,.08);text-decoration:line-through}
+.dl.add{color:var(--green);background:rgba(62,207,142,.1)}
+.cmts{display:flex;flex-direction:column;gap:7px;margin-bottom:9px}
+.cmt{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:9px 11px}
+.cmt-h{display:flex;align-items:center;gap:8px;margin-bottom:3px}
+.cmt-b{font-size:11.5px;font-weight:800;color:var(--ink)}
+.cmt-t{font-size:10px;color:var(--ink3)}
+.cmt-x{font-size:12.5px;color:var(--ink2);line-height:1.5}
+.cmt-empty{font-size:12px;color:var(--ink3);padding:4px 2px}
+.cmt-add{display:flex;gap:8px;align-items:flex-end}
+.cmt-add textarea{flex:1;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 11px;color:var(--ink);font-family:inherit;font-size:12.5px;min-height:40px;resize:vertical}
+.cmt-add textarea:focus{outline:none;border-color:var(--yellow)}
+.cmt-send{background:var(--panel2);border:1px solid var(--line2);color:var(--ink);font-weight:700;font-size:12px;padding:9px 14px;border-radius:10px;cursor:pointer;white-space:nowrap}
+.cmt-send:hover{background:var(--yellow);color:#12121c}
 /* greeting */
 .greet{font-size:14px;font-weight:600;color:var(--ink2);margin:22px 0 -6px;display:flex;align-items:center;gap:8px}
 .greet b{color:var(--ink);font-weight:800}
@@ -533,6 +577,17 @@ button:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px
    <div class="vtabs" id="vtabs">
      <button data-v="cal" class="active">🗓️ Kalender</button>
      <button data-v="board">📋 Board</button>
+   </div>
+   <div class="tb-filter">
+     <input id="searchBox" class="tb-search" placeholder="🔍 Suchen (Thema, Text, Hashtag)" oninput="onSearch(this.value)">
+     <select id="statusFilter" class="tb-sel" onchange="onStatusFilter(this.value)">
+       <option value="all">Alle Status</option>
+       <option value="gruen">Freigegeben</option>
+       <option value="orange">In Korrektur</option>
+       <option value="rot">Abgelehnt</option>
+       <option value="veto">Mit Veto</option>
+       <option value="offen">Entwürfe</option>
+     </select>
    </div>
    <div class="legend" id="legend"></div>
  </div>
@@ -740,7 +795,7 @@ const ANLASS=[
 
 /* ============ POSTS ============ */
 const RAW = [
-{p:"florian",id:"FL-1",wk:1,day:"Di",date:"01.09.",time:"07:45",pillar:"A",fmt:"Text",theme:"PPWR: ein Stammdaten-Thema",quote:"Compliance beginnt\nim Materialstamm",why:"Taggenau aktuell, trifft Consumer-Products-Kunden, treibt aufs Webinar 8.9.",body:"Seit dem 12.08. gilt die PPWR und die meisten behandeln sie als Verpackungs-Thema.\n\nFalsch. Sie ist ein Stammdaten-Thema.\n\nDie neue EU-Verpackungsverordnung verlangt keine schönen Sätze im Nachhaltigkeitsbericht. Sie verlangt belastbare Daten: pro Produkt, pro Verpackung. Und die liegen genau dort, wo im Mittelstand am seltensten aufgeräumt wird: im SAP-Materialstamm.\n\nWas jetzt sauber im System stehen muss:\n👉 Materialzusammensetzung je Verpackungskomponente\n👉 Recyclat-Anteil und Recyclingfähigkeit\n👉 Konformitätsnachweis, abrufbar auf Knopfdruck\n👉 alles versioniert, nicht in fünf Excel-Ständen\n\nWer das im Griff hat, macht aus der PPWR einen Klick. Wer nicht, macht daraus ein Projekt mit Zeitdruck und riskiert im schlimmsten Fall, dass Ware nicht mehr in den Handel darf.\n\nBesonders betroffen sind die Branchen mit hohem Verpackungsaufkommen: Chemie, Lebensmittel, Kosmetik und Konsumgüter. Genau dort sehen wir bei Innovabee gerade den Unterschied. Wer seine Produktdaten ernst nimmt, zieht vorbei.\n\nDie gute Nachricht: Genau diese Verpackungsdaten, Nachweise und Dokumentation lassen sich direkt in SAP S/4HANA und SAP Cloud ERP abbilden. Wie das in der Praxis geht, zeigen wir am 8. September in einem kostenlosen Webinar. Den Anmeldelink findet ihr im ersten Kommentar.\n\nCompliance beginnt nicht in der CSR-Broschüre. Sie beginnt im Materialstamm.",tags:"#PPWR #SAP #Nachhaltigkeit #Mittelstand"},
+{p:"florian",id:"FL-1",wk:1,day:"Di",date:"01.09.",time:"07:45",pillar:"A",fmt:"Text",theme:"PPWR: ein Stammdaten-Thema",quote:"Compliance beginnt\nim Materialstamm",why:"Taggenau aktuell, trifft Consumer-Products-Kunden, treibt aufs Webinar 8.9.",body:"Seit dem 12.08. gilt die PPWR und die meisten behandeln sie als Verpackungs-Thema.\n\nFalsch. Sie ist ein Stammdaten-Thema.\n\nDie neue EU-Verpackungsverordnung verlangt keine schönen Sätze im Nachhaltigkeitsbericht. Sie verlangt belastbare Daten: pro Produkt, pro Verpackung. Und die liegen genau dort, wo im Mittelstand am seltensten aufgeräumt wird: im SAP-Materialstamm.\n\nWas jetzt sauber im System stehen muss:\n👉 Materialzusammensetzung je Verpackungskomponente\n👉 Recyclat-Anteil und Recyclingfähigkeit\n👉 Konformitätsnachweis, abrufbar auf Knopfdruck\n👉 alles versioniert, nicht in fünf Excel-Ständen\n\nWer das im Griff hat, macht aus der PPWR einen Klick. Wer nicht, macht daraus ein Projekt mit Zeitdruck und riskiert im schlimmsten Fall, dass Ware nicht mehr in den Handel darf.\n\nBesonders betroffen sind die Branchen mit hohem Verpackungsaufkommen: Chemie, Lebensmittel, Kosmetik und Konsumgüter. Genau dort sehen wir bei Innovabee gerade den Unterschied. Wer seine Produktdaten ernst nimmt, zieht vorbei.\n\nDie gute Nachricht: Genau diese Verpackungsdaten, Nachweise und Dokumentation lassen sich direkt in SAP S/4HANA und SAP Cloud ERP abbilden. Wie das in der Praxis geht, zeigen wir am 8. September in einem kostenlosen Webinar. Den Anmeldelink findet ihr im ersten Kommentar.\n\nCompliance beginnt nicht in der CSR-Broschüre. Sie beginnt im Materialstamm.",v2:"Viele Consumer-Products-Firmen behandeln die PPWR als Verpackungs-Thema. Falsch: Sie ist ein Stammdaten-Thema.\n\nSeit dem 12.08. gilt die neue EU-Verpackungsverordnung. Wer Materialzusammensetzung, Recyclat-Anteil und Konformität nicht sauber im SAP-Materialstamm führt, bekommt bald ein Problem an der Rampe, nicht im Nachhaltigkeitsbericht.\n\nGenau diese Daten lassen sich in SAP S/4HANA und SAP Cloud ERP zentral abbilden. Wie das geht, zeigen wir am 8. September im kostenlosen Webinar. Link im ersten Kommentar.\n\nCompliance beginnt im Materialstamm.",tags:"#PPWR #SAP #Nachhaltigkeit #Mittelstand"},
 {p:"florian",id:"FL-2",wk:1,day:"Mi",date:"02.09.",time:"11:45",pillar:"B",fmt:"Zitat-Grafik",theme:"Agent Sprawl: KI-Governance",quote:"40 KI-Agenten.\nUnd keiner\nweiß davon.",why:"Bild-Headline, Board-Level-Thema, Governance-Kante.",body:"Sie haben wahrscheinlich schon Dutzende KI-Agenten im Haus. Und wissen es nicht.\n\n„Agent Sprawl\" heißt das neue Problem: KI-Agenten vermehren sich schneller, als Unternehmen sie überhaupt erfassen. Fast jeder nutzt oder plant sie, aber die wenigsten wissen, welche laufen, auf welche Daten sie zugreifen und wer verantwortlich ist.\n\nDas ist kein IT-Problem mehr. Das ist ein Vorstands-Problem.\n\nFür mich ist die Lehre dieselbe wie vor 20 Jahren bei den Excel-Schattenlösungen: Nicht das Werkzeug ist gefährlich. Der fehlende Überblick ist es.\n\nDeshalb gilt bei uns vor jedem neuen Agenten: erst Klarheit, dann Rollout. Drei Fragen, die jede Geschäftsführung beantworten können muss:\n👉 Welche KI-Agenten laufen bei uns: vollständig gelistet?\n👉 Auf welche Daten und Systeme dürfen sie zugreifen?\n👉 Wer trägt die Verantwortung, wenn einer eine falsche Entscheidung trifft?\n\nWer das nicht beantworten kann, hat kein KI-Problem. Er hat ein Governance-Problem und merkt es erst, wenn etwas schiefgeht.\n\nKI-Governance ist keine Bürokratie. Sie ist die Voraussetzung, KI überhaupt breit nutzen zu dürfen. Mit der EU-KI-Verordnung wird genau diese Grundordnung ohnehin Pflicht.",tags:"#KI #AIGovernance #SAP #Mittelstand"},
 {p:"florian",id:"FL-8",wk:1,day:"Do",date:"03.09.",time:"08:15",pillar:"B",fmt:"Zitat-Grafik",theme:"Zukunft: Joule statt T-Codes",quote:"Bald lernt niemand\nmehr T-Codes.",why:"Bewährtes Grafik-Format, Blick auf die Zukunft der SAP-Arbeit.",body:"Bald lernt niemand mehr Transaktionscodes auswendig. Und das ist eine gute Nachricht.\n\nWer SAP aus den letzten 20 Jahren kennt, kennt das Bild: kryptische Kürzel, endlose Menübäume, Klickstrecken, die man auswendig lernt.\n\nWie SAP-Arbeiten künftig aussieht, ist ein anderes: Man beschreibt in normaler Sprache, was man braucht: Joule übernimmt die Schritte im Hintergrund, über das Fiori Launchpad hinweg.\n\nAber Achtung, das ist keine Spielerei. Es verschiebt, was ein Key-User können muss:\n👉 weg vom Klick-Wissen (welche Transaktion, welcher Pfad)\n👉 hin zu Prozessverständnis (was soll eigentlich passieren und warum)\n👉 hin zu Urteilsvermögen (stimmt das Ergebnis, das die KI vorschlägt?)\n\nDas ist die eigentliche Nachricht hinter der schönen Oberfläche: Nicht die Software wird einfacher. Die Arbeit wird anspruchsvoller und wertvoller.\n\nWer seine Leute jetzt darauf vorbereitet, gewinnt. Wer wartet, holt es teuer nach.",tags:"#SAP #Joule #KI #FutureOfWork"},
 {p:"florian",id:"FL-3",wk:2,day:"Di",date:"08.09.",time:"07:45",pillar:"A",fmt:"Text",theme:"Cloud ist kein Dogma",quote:"Cloud ist\nkein Dogma.",why:"Aktuell (SAP-Signal), Fit-to-Standard statt Public-vs-Private-Glaubensfrage.",body:"Selbst SAP rückt gerade von „KI nur in der Cloud\" ab. Für den Mittelstand ist das ein wichtiges Signal.\n\nNicht, weil Cloud plötzlich falsch wäre. Sondern weil es zeigt: Cloud ist kein Dogma. Es ist eine Abwägung.\n\nDie Debatte im Mittelstand dreht sich seit Jahren um die falsche Frage: „Public oder Private?\" Als ginge es um eine Glaubensrichtung.\n\nDie ehrliche Frage ist eine andere: Welcher unserer Prozesse gehört in den Standard und welche Extrawurst kostet uns mehr, als sie bringt?\n\nWas wir bei Innovabee immer wieder erleben:\n👉 Public Cloud (GROW with SAP) ist für mehr Mittelständler richtig, als denken: wenn der Mut zum Standard da ist.\n👉 Private Cloud ist keine „Alles bleibt wie bisher\"-Versicherung. Genau das ist die teure Falle.\n👉 Sovereign-Modelle lösen das Souveränitäts-Argument, ohne dass man alles selbst betreiben muss.\n\nWir entscheiden das nie nach Gewohnheit. Sondern nach ehrlicher Analyse: Wie viel eurer „Individualität\" ist echter Wettbewerbsvorteil und wie viel nur gewachsene Bequemlichkeit?\n\nStandard ist kein Rückschritt. Standard ist die Erlaubnis, schneller zu werden.",tags:"#SAP #CloudERP #KI #Mittelstand"},
@@ -755,7 +810,7 @@ const RAW = [
 {p:"florian",id:"FL-13",wk:4,day:"Do",date:"24.09.",time:"08:00",pillar:"E",fmt:"Foto",theme:"DSAG-Jahreskongress: wir sind da",quote:"Wir sehen uns\nin Köln.",why:"Florian vor Ort (6.-8.10.), Teaser Ende September, Kunde Rausch als Proof.",body:"Anfang Oktober bin ich in Köln, beim DSAG-Jahreskongress. Kommt am Stand vorbei.\n\nDer Jahreskongress der Deutschsprachigen SAP-Anwendergruppe ist der wichtigste Treffpunkt für SAP-Anwenderunternehmen im deutschsprachigen Raum. Wir sind mit Innovabee wieder mit eigenem Stand dabei.\n\nDie Eckdaten:\n👉 6. bis 8. Oktober 2026\n👉 Kölnmesse, Halle 2.1, Stand E7\n👉 gemeinsamer Vortrag mit unserem Kunden Rausch Schokoladen zur Transformation nach SAP Cloud ERP\n\nIm Vortrag zeigen wir, wie Cloud, Prozessoptimierung und erste KI- und Automatisierungsszenarien zusammenspielen. Also nicht die Hochglanz-Version, sondern das, was in einem echten Projekt funktioniert und was nicht.\n\nEhrlich gesagt: Die besten Gespräche entstehen ohnehin nicht auf der Bühne, sondern am Stand. Genau dafür fahre ich hin.\n\nWer auch da ist: Kommt auf einen Kaffee an Stand E7 vorbei.",tags:"#SAP #DSAGJK26 #CloudERP #Mittelstand"},
 {p:"florian",id:"FL-12",wk:4,day:"Do",date:"24.09.",time:"16:00",pillar:"E",fmt:"Foto",theme:"Teamgeist schlägt Einzelkönnen",quote:"Kein Held.\nEin Team.",why:"Menschlicher Post mit Business-Brücke (Sponsoring, Teamgedanke).",body:"Wir sponsern Jugend-Handball und -Fußball. Nicht aus Marketing. Aus Überzeugung.\n\nDenn im SAP-Projekt ist es wie im Sport: Einzelkönnen verliert gegen ein Team, das zusammenspielt.\n\nWas ich bei den Mannschaften jede Woche sehe, nehme ich mit ins Büro:\n👉 sich aufeinander verlassen, auch wenn es eng wird\n👉 füreinander einstehen, statt Schuld weiterzureichen\n👉 nach einem Rückschlag den nächsten Angriff spielen, nicht hadern\n\nDas sind exakt die Eigenschaften, die über den Erfolg einer Transformation entscheiden. Technik kann man kaufen. Diese Haltung muss ein Team leben: im Verein wie im Unternehmen.\n\nDeshalb ist mir der Teamgedanke bei Innovabee so wichtig. Nach innen, im eigenen Team. Und nach außen, in der Zusammenarbeit mit unseren Kunden.\n\nDie besten Transformationen gewinnt kein Held. Sie gewinnt ein Team.",tags:"#Teamgeist #Mittelstand #Sponsoring #Leadership"},
 {p:"saskia",id:"SF-1",wk:1,day:"Di",date:"01.09.",time:"08:00",pillar:"CS",fmt:"Text",theme:"Kein Anruf ist nicht zufrieden",quote:"Kein Anruf heißt\nnicht zufrieden.",why:"Kernnarrativ Customer Success, definiert Service neu.",body:"„Guter Service ist, wenn sich der Kunde nicht beschwert.\"\n\nEhrlich? Das ist mir zu wenig.\n\nKein Anruf heißt nicht zufrieden. Es heißt oft nur: Der Kunde hat sich abgefunden. Und irgendwann schaut er sich still nach einer Alternative um.\n\nEchter Customer Success beginnt, bevor der Kunde ein Problem überhaupt spürt. Deshalb messen wir nicht in erster Linie, wie schnell wir Tickets schließen. Wir fragen anders:\n👉 Kennen wir sein Geschäft gut genug, um Probleme zu sehen, bevor sie entstehen?\n👉 Bringt ihn das, was wir tun, im Alltag wirklich weiter?\n👉 Würde er uns von sich aus weiterempfehlen oder bleibt er nur, weil ein Wechsel anstrengend wäre?\n\nNach dem Go-live fängt die eigentliche Arbeit erst an. Der erste Go-live ist ein Anfang, kein Ziel. Was danach kommt, entscheidet, ob aus einem Projekt eine Partnerschaft wird.\n\nFür mich ist das der Unterschied zwischen Support und Partnerschaft. Und der unterschätzteste Hebel im SAP-Geschäft.",tags:"#CustomerSuccess #SAP #Servicekultur"},
-{p:"saskia",id:"SF-2",wk:1,day:"Mi",date:"02.09.",time:"11:30",pillar:"AI",fmt:"Text",theme:"95 % scheitern am Change",quote:"KI scheitert im\nChange, nicht im Code.",why:"Signature-Thema KI-Realismus, kontraintuitiv, teilbar.",body:"95 % der KI-Piloten bringen keinen messbaren Nutzen.\n\nUnd der Grund ist fast nie die Technik.\n\nEs ist die Lücke zwischen Tool und Organisation. Ein Modell wird eingeführt, sauber aufgesetzt, IT-seitig begleitet und dann fragt die Geschäftsleitung: Wo ist der Mehrwert? Oft gibt es weder klare Zahlen noch spürbare Entlastung. Also wird gestoppt.\n\nMeine Erfahrung: KI scheitert im Change, nicht im Code. Was fast immer fehlt, ist der Teil, der unbequem ist:\n👉 ein konkreter Prozess, an dem KI wirklich ansetzt (nicht „irgendwas mit KI\")\n👉 Menschen, die das Werkzeug im Alltag nutzen und nicht umgehen\n👉 eine ehrliche Baseline: Wie lief es vorher, was soll besser werden?\n\nDeshalb ist der wichtigste KI-Mensch in eurem Haus kein Data Scientist. Sondern jemand, der Prozesse versteht und die Menschen mitnimmt.\n\nUnd ja: KI muss einen nachweisbaren Mehrwert liefern. Aber nicht am Stellenabbau gemessen, sondern daran, ob Menschen mehr Zeit für das haben, was zählt: Analyse, Entscheidung, Kundennähe.\n\nWer KI nur einkauft, hat das Teuerste vergessen: die Leute, die am Ende damit arbeiten sollen.",tags:"#KI #KIRealismus #ChangeManagement #SAP"},
+{p:"saskia",id:"SF-2",wk:1,day:"Mi",date:"02.09.",time:"11:30",pillar:"AI",fmt:"Text",theme:"95 % scheitern am Change",quote:"KI scheitert im\nChange, nicht im Code.",why:"Signature-Thema KI-Realismus, kontraintuitiv, teilbar.",body:"95 % der KI-Piloten bringen keinen messbaren Nutzen.\n\nUnd der Grund ist fast nie die Technik.\n\nEs ist die Lücke zwischen Tool und Organisation. Ein Modell wird eingeführt, sauber aufgesetzt, IT-seitig begleitet und dann fragt die Geschäftsleitung: Wo ist der Mehrwert? Oft gibt es weder klare Zahlen noch spürbare Entlastung. Also wird gestoppt.\n\nMeine Erfahrung: KI scheitert im Change, nicht im Code. Was fast immer fehlt, ist der Teil, der unbequem ist:\n👉 ein konkreter Prozess, an dem KI wirklich ansetzt (nicht „irgendwas mit KI\")\n👉 Menschen, die das Werkzeug im Alltag nutzen und nicht umgehen\n👉 eine ehrliche Baseline: Wie lief es vorher, was soll besser werden?\n\nDeshalb ist der wichtigste KI-Mensch in eurem Haus kein Data Scientist. Sondern jemand, der Prozesse versteht und die Menschen mitnimmt.\n\nUnd ja: KI muss einen nachweisbaren Mehrwert liefern. Aber nicht am Stellenabbau gemessen, sondern daran, ob Menschen mehr Zeit für das haben, was zählt: Analyse, Entscheidung, Kundennähe.\n\nWer KI nur einkauft, hat das Teuerste vergessen: die Leute, die am Ende damit arbeiten sollen.",v2:"95 % der KI-Piloten bringen keinen messbaren Nutzen. Der Grund ist fast nie die Technik.\n\nEs ist die Lücke zwischen Tool und Organisation. KI scheitert im Change, nicht im Code.\n\nDeshalb ist der wichtigste KI-Mensch in eurem Haus kein Data Scientist, sondern jemand, der Prozesse versteht und Menschen mitnimmt.\n\nWer KI nur einkauft, hat das Teuerste vergessen: die Leute, die damit arbeiten sollen.",tags:"#KI #KIRealismus #ChangeManagement #SAP"},
 {p:"saskia",id:"SF-4",wk:1,day:"Do",date:"03.09.",time:"08:30",pillar:"K",fmt:"Text",theme:"„Das weiß ich nicht“ als Stärke",quote:"Führung ist\nkein Allwissen.",why:"Reife Führungshaltung, nahbar, gegen den Strich.",body:"„Eine gute Führungskraft hat auf alles eine Antwort.\"\n\nHabe ich früher auch geglaubt. Heute denke ich fast das Gegenteil.\n\nDie besten Führungskräfte, die ich kenne, sagen öfter „das weiß ich nicht\" als „so ist es\". Nicht aus Schwäche. Aus Haltung.\n\nDenn wer vorgibt, alles zu wissen, bekommt genau das zurück: Mitarbeiter, die nur noch bestätigen, statt mitzudenken. Wer dagegen Fragen zulässt, bekommt bessere Antworten: von den Menschen, die näher am Problem sind.\n\nWas ich mir in stressigen Momenten angewöhnt habe:\n👉 erst zuhören, dann urteilen\n👉 „das weiß ich nicht: finden wir es heraus\" als vollständigen Satz stehen lassen\n👉 Verantwortung tragen, ohne Kontrolle über jede Antwort zu beanspruchen\n\nGerade bei KI wird das zur Schlüsselkompetenz. Niemand hat hier schon alle Antworten. Führung heißt dann nicht, so zu tun als ob, sondern die richtigen Fragen zu stellen und den Raum zu schaffen, sie gemeinsam zu beantworten.\n\nFührung ist kein Allwissen. Es ist die Fähigkeit, die richtigen Fragen zu stellen und zuzuhören.",tags:"#Führung #Leadership #Unternehmenskultur"},
 {p:"saskia",id:"SF-3",wk:2,day:"Di",date:"08.09.",time:"08:00",pillar:"AI",fmt:"Carousel",theme:"Erst das Haus, dann die Möbel",quote:"Erst das Haus,\ndann die Möbel.",why:"KI-Basis vor Use Cases, echter Listen-Inhalt (Carousel), OctopusGenius-Anker.",body:"„Wir brauchen JETZT KI-Use-Cases.\" Verstehe ich. Aber der zweite Schritt kommt nicht vor dem ersten.\n\nGroße Player machen es gerade vor: KI auf einem sauberen Cloud-Fundament (RISE with SAP), nicht als isoliertes Technologiethema, das man mal eben danebenstellt.\n\nBevor über spektakuläre Use Cases geredet wird, braucht es die Basis. Genau die haben wir bei Innovabee zuerst geschaffen:\n👉 Zugänge zu den Werkzeugen für alle Mitarbeitenden (ChatGPT, Copilot, SAP Joule)\n👉 klare Verantwortlichkeiten rund um SAP AI\n👉 dedizierte Rollen, die das Thema wirklich treiben (SAP-AI-Expertin, AI Catalyst)\n👉 starke Partnerschaften, u. a. mit OctopusGenius\n👉 klare Leitplanken, welche Daten in welches Tool dürfen\n\nDie meisten KI-Projekte scheitern nicht an der Idee. Sie scheitern am fehlenden Fundament und wundern sich dann, dass „die KI nichts bringt\".\n\nErst das Haus, dann die Möbel.",tags:"#KI #SAP #Joule #Digitalisierung"},
 {p:"saskia",id:"SF-5",wk:2,day:"Mi",date:"09.09.",time:"11:30",pillar:"AI",fmt:"Text",theme:"AI-Act: die Fristen-Falle",quote:"Fristverschiebung\nist eine Falle.",why:"Governance-Kante gegen den Mehr-Zeit-Reflex, aktuell.",body:"Brüssel hat die KI-Hochrisiko-Fristen nach hinten geschoben. Klingt nach Entlastung. Ist eine Falle.\n\nWer jetzt aufatmet und Governance vertagt, baut zwei Jahre lang unkontrollierten KI-Wildwuchs auf: den entwirrt später niemand mehr.\n\nDenn während die Frist läuft, entstehen im Unternehmen längst Fakten: Tools werden eingeführt, Daten fließen, Agenten treffen Entscheidungen. Ohne Regeln wächst genau das, was man 2027 mühsam wieder einfangen muss.\n\nRealismus heißt für mich: die gewonnene Zeit nutzen, um sauber aufzuräumen, nicht, um wegzuschauen.\n👉 Ein einfaches KI-Inventar: Welche Tools und Agenten laufen bei uns?\n👉 Klare Regeln: Welche Daten dürfen rein, welche nicht?\n👉 Besondere Sorgfalt dort, wo KI heikel wird: etwa bei HR- und Recruiting-Tools, die als Hochrisiko gelten.\n\nDas ist keine Bürokratie. Das ist die Voraussetzung, KI überhaupt verantwortungsvoll und dauerhaft nutzen zu dürfen.\n\nWer eine Grundordnung hat, kann Gas geben. Wer keine hat, fährt blind.",tags:"#KI #AIAct #Governance #Leadership"},
@@ -768,15 +823,51 @@ const RAW = [
 {p:"saskia",id:"SF-12",wk:4,day:"Do",date:"24.09.",time:"08:30",pillar:"P",fmt:"Text",theme:"Konzern ausgeschlagen",quote:"Nicht das Logo.\nDie Wirkung.",why:"1 persönlicher Post mit Business-Brücke (Unternehmertum, kein Privates).",body:"Ich hatte einen Vertrag bei einem großen Konzern in der Tasche. Und habe mich bewusst dagegen entschieden.\n\nEigentlich war es reiner Zufall, der mich in den Mittelstand führte: zu Innovabee, direkt als Absolventin. Beraterin, dann Projektleiterin. Und irgendwann kam die Aufgabe, die alles verändert hat: den Public-Cloud-Bereich aufzubauen.\n\nDas ist bis heute ein bisschen mein Baby.\n\nRückblickend war die Entscheidung gegen den großen Namen die beste meiner Laufbahn. Denn im Mittelstand bekam ich etwas, das anderswo Jahre gedauert hätte:\n👉 echte Verantwortung, früh\n👉 Entscheidungen, die sichtbar etwas bewegen\n👉 die Möglichkeit, etwas aufzubauen, statt es nur zu verwalten\n\nSpäter bin ich Gesellschafterin geworden. Vom Konzern-Angebot zur Mitunternehmerin: diesen Weg hätte ich damals nicht geplant.\n\nWas ich jungen Menschen mitgebe, die vor der gleichen Wahl stehen: Der größte Name ist nicht automatisch die größte Chance.\n\nKarriere misst sich nicht am Logo auf der Visitenkarte. Sondern daran, wie viel du bewegen darfst.",tags:"#Unternehmertum #Mittelstand #Karriere #SAP"}
 ];
 
+/* ============ DRAFTS (KI-Entwürfe, lokal persistiert) ============ */
+const LS_DRAFTS='beeDrafts_v1';
+let drafts = JSON.parse(localStorage.getItem(LS_DRAFTS)||'[]');
+drafts.forEach(d=>{ if(!RAW.some(r=>r.id===d.id)) RAW.push(d); });
+function saveDrafts(){ localStorage.setItem(LS_DRAFTS, JSON.stringify(drafts)); }
+
 /* ============ STATE ============ */
 const LS='beeApproved_v3';
 let state = JSON.parse(localStorage.getItem(LS)||'{}');
 RAW.forEach(p=>{
-  // Standard: Florian/Saskia (C-Level) haben bereits freigegeben ('gruen'). Astrid = nachgelagertes Veto (Warnflag).
-  if(!state[p.id]) state[p.id]={status:'gruen',fbText:'',chips:[],voice:false,ver:1,veto:{active:false,fbText:'',chips:[],voice:false}};
+  // Standard: Florian/Saskia (C-Level) haben bereits freigegeben ('gruen'). Entwürfe starten 'offen'. Astrid = nachgelagertes Veto.
+  if(!state[p.id]) state[p.id]={status:(p.draft?'offen':'gruen'),fbText:'',chips:[],voice:false,ver:1,veto:{active:false,fbText:'',chips:[],voice:false},comments:[],history:[]};
   if(!state[p.id].veto) state[p.id].veto={active:false,fbText:'',chips:[],voice:false};
+  if(!state[p.id].comments) state[p.id].comments=[];
+  if(!state[p.id].history) state[p.id].history=[];
 });
 function save(){localStorage.setItem(LS,JSON.stringify(state));}
+function nowStr(){ const d=new Date(); return d.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'})+' '+d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}); }
+function logHist(id,action,note){ if(!state[id].history)state[id].history=[]; state[id].history.push({by:roleLabel(),action,note:note||'',ts:nowStr()}); }
+
+/* ============ GEO-SCORE + LEITFADEN-CHECK (aus LinkedIn-Leitfaden) ============ */
+function geoScore(p){
+  const body=bodyOf(p), chars=body.length;
+  const first=body.split('\n').find(l=>l.trim())||'';
+  const hCount=((p.tags||'').match(/#/g)||[]).length;
+  const hasList=/(^|\n)\s*(👉|✅|•|\d[\.\)])/.test(body);
+  const hasNum=/\d/.test(body);
+  const ents=(body.match(/\b(SAP|S\/4HANA|RISE|GROW|Joule|Fiori|Cloud ERP|BTP|Signavio|KI|ERP|PPWR|CSRD|OctopusGenius|Innovabee|Two-Tier|IPD|SFM)\b/g)||[]).length;
+  const hasLink=/https?:\/\//.test(body);
+  const firstShort=first.length<=300;
+  const c=[];
+  const len = chars>=1300&&chars<=1900 ? 20 : (chars>=500&&chars<=3000 ? 11 : 4);
+  c.push({ok:chars>=1300&&chars<=1900, w:'len', label:`${chars} Zeichen`, hint:'Sweet Spot 1.300 bis 1.900'});
+  const hook = first.length<=210 && first.length>0; c.push({ok:hook,w:15,label:'Hook vor „…mehr"'});
+  c.push({ok:hasList,w:20,label:'Struktur / Liste'});
+  const entOk=hasNum&&ents>=2; c.push({ok:entOk,w:20,label:'Fakten & Entitäten'});
+  c.push({ok:firstShort,w:10,label:'Kernaussage in Satz 1 bis 3'});
+  const tagOk=hCount>=3&&hCount<=5; c.push({ok:tagOk,w:10,label:`${hCount} Hashtags`});
+  c.push({ok:!hasLink,w:5,label:'Kein Link im Text'});
+  let s=len;
+  s+= hook?15:0; s+= hasList?20:0; s+= entOk?20:0; s+= firstShort?10:0; s+= tagOk?10:0; s+= !hasLink?5:0;
+  const label = s>=85?'stark':(s>=65?'solide':'ausbaufähig');
+  const col = s>=85?'var(--green)':(s>=65?'var(--yellow)':'var(--orange)');
+  return {score:s,label,col,checks:c};
+}
 /* ==== Rollen-Logik: Florian/Saskia = C-Level-Freigabe (primär, Standard=freigegeben) · Astrid = nachgelagertes Veto (Warnflag, F/S entscheiden final) ==== */
 const isVeto = ()=> curPerson==='astrid';
 function vetoed(id){ return !!state[id].veto.active; }
@@ -813,7 +904,16 @@ function updateNav(){
 
 /* ============ HELPERS ============ */
 function pill(p){return PILLARS[p.p][p.pillar];}
-function visiblePosts(){return (curPerson==='beide'||curPerson==='astrid')?RAW.slice():RAW.filter(p=>p.p===curPerson);}
+let searchQ='', statusFilter='all';
+function onSearch(v){ searchQ=v; render(); }
+function onStatusFilter(v){ statusFilter=v; render(); }
+function visiblePosts(){
+  let list=(curPerson==='beide'||curPerson==='astrid')?RAW.slice():RAW.filter(p=>p.p===curPerson);
+  const q=searchQ.trim().toLowerCase();
+  if(q) list=list.filter(p=>((p.theme||'')+' '+(p.body||'')+' '+(p.tags||'')).toLowerCase().includes(q));
+  if(statusFilter!=='all') list=list.filter(p=> statusFilter==='veto' ? vetoed(p.id) : state[p.id].status===statusFilter);
+  return list;
+}
 function fmtBody(txt){
   return txt.replace(/&/g,'&amp;').replace(/</g,'&lt;')
     .replace(/(#[\wÄÖÜäöüß]+)/g,'<span class="tag">$1</span>');
@@ -893,7 +993,7 @@ function renderCalendar(){
         html+=`<div class="pcard${vflag?' vetoed':''}" style="border-left-color:${pl.c}" onclick="openModal('${p.id}')">
           <span class="amp ${st}"></span>
           ${curPerson==='beide'?`<div class="who"><span class="av" style="background:${PEOPLE[p.p].avc}">${PEOPLE[p.p].av}</span>${PEOPLE[p.p].name.split(' ')[0]}${vflag?'<span class="ci-tick veto" title="Astrid-Veto">⚠ Veto</span>':''}</div>`:''}
-          <div class="th">${p.theme}</div>
+          <div class="th">${p.draft?'<span class="draft-badge">Entwurf</span> ':''}${p.theme}</div>
           <div class="meta"><span class="pill" style="background:${pl.c}22;color:color-mix(in srgb, ${pl.c} 72%, var(--ink))">${pl.l}</span><span class="fmt">${p.fmt}</span></div>
         </div>`;
       });
@@ -907,16 +1007,17 @@ function renderCalendar(){
 /* ============ RENDER BOARD ============ */
 function renderBoard(){
   const ps=visiblePosts();
+  const hasDraft = ps.some(p=>state[p.id].status==='offen');
   const cols = isVeto()
     ? [ {k:['ok'],t:'Kein Einwand',ic:'🟢'}, {k:['veto'],t:'Veto eingelegt',ic:'⛔'} ]
-    : [ {k:['orange'],t:'In Korrektur',ic:'🟠'}, {k:['rot'],t:'Abgelehnt',ic:'🔴'}, {k:['gruen'],t:'Freigegeben',ic:'🟢'} ];
+    : [ ...(hasDraft?[{k:['offen'],t:'Entwurf / Zur Freigabe',ic:'📝'}]:[]), {k:['orange'],t:'In Korrektur',ic:'🟠'}, {k:['rot'],t:'Abgelehnt',ic:'🔴'}, {k:['gruen'],t:'Freigegeben',ic:'🟢'} ];
   return `<div class="kanban">`+cols.map(col=>{
     const items=ps.filter(p=>col.k.includes(actStatus(p.id)));
     return `<div class="kcol"><h3>${col.ic} ${col.t}<span class="n">${items.length}</span></h3>`+
       items.map(p=>{const pl=pill(p);
         const vflag=vetoed(p.id);
         return `<div class="kcard${vflag?' vetoed':''}" onclick="openModal('${p.id}')">
-          <div class="kt">${p.theme}</div>
+          <div class="kt">${p.draft?'<span class="draft-badge">Entwurf</span> ':''}${p.theme}</div>
           <div class="kmeta">
             ${curPerson==='beide'?`<span class="av" style="width:18px;height:18px;border-radius:50%;font-size:9px;font-weight:800;display:grid;place-items:center;color:#12121c;background:${PEOPLE[p.p].avc}">${PEOPLE[p.p].av}</span>`:''}
             <span class="pill" style="font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:20px;background:${pl.c}22;color:color-mix(in srgb, ${pl.c} 72%, var(--ink))">${pl.l}</span>
@@ -1080,7 +1181,26 @@ function renderThemesInbox(){
     ${t.title?`<div class="th-c-title">${t.title.replace(/</g,'&lt;')}</div>`:''}
     ${(t.occ&&t.kind==='anlass')?`<div class="th-c-title">${t.occ.replace(/</g,'&lt;')}</div>`:''}
     ${t.text?`<div class="th-c-text">${t.text.replace(/</g,'&lt;')}</div>`:''}
+    <button class="th-draft" onclick="makeDraft(${i})">✨ Entwurf erzeugen</button>
   </div>`).join('');
+}
+function makeDraft(i){
+  const t=topics[i]; if(!t) return;
+  const person = t.by==='Saskia'?'saskia':'florian';
+  const per=PEOPLE[person];
+  const title=(t.title|| (t.kind==='anlass'?(t.occ||t.date):'') ||'Neues Thema').trim();
+  const src=(t.text||t.occ||t.title||'').trim();
+  const body=`${title}\n\n${src||'Kernidee hier ausformulieren.'}\n\nWas das für den Mittelstand bedeutet:\n👉 Punkt 1\n👉 Punkt 2\n👉 Punkt 3\n\n[Demo-Entwurf: im Live-System schreibt die KI diesen Text im Stimmprofil von ${per.name.split(' ')[0]} fertig aus.]`;
+  const id='DRAFT-'+Date.now();
+  const post={p:person,id,wk:4,day:'Do',date:'24.09.',time:'09:00',pillar:(person==='saskia'?'AI':'B'),fmt:'Text',theme:title.slice(0,58),quote:'Entwurf aus\ndeinem Thema',why:`Aus einem eingebrachten Thema erzeugt (${t.kind}, von ${t.by}).`,body,tags:'#Innovabee #SAP',draft:true};
+  RAW.push(post); drafts.push(post); saveDrafts();
+  state[id]={status:'offen',fbText:'',chips:[],voice:false,ver:1,veto:{active:false,fbText:'',chips:[],voice:false},comments:[],history:[{by:'923b',action:'Entwurf aus Thema erzeugt',note:t.kind,ts:nowStr()}]};
+  save();
+  curView='board'; statusFilter='offen';
+  document.querySelectorAll('#vtabs button').forEach(x=>x.classList.toggle('active',x.dataset.v==='board'));
+  const sf=document.getElementById('statusFilter'); if(sf) sf.value='offen';
+  render();
+  toast('✨ Entwurf erstellt, im Board unter „Entwurf / Zur Freigabe".','ok',3400);
 }
 
 /* ============ MODAL ============ */
@@ -1093,11 +1213,15 @@ function openModal(id){
   const bd=bodyOf(p);
   const isLong=bd.length>TRUNC;
   const shortBody=isLong?bd.slice(0,TRUNC):bd;
-  // LinkedIn-Feinschliff-Check
-  const firstLine=bd.split('\n')[0], chars=bd.length;
-  const hCount=(p.tags.match(/#/g)||[]).length, endsQ=/\?[\s👇]*$/.test(bd.trim()), hookOk=firstLine.length<=210;
+  // GEO-Score + Leitfaden-Check (aus LinkedIn-Leitfaden)
+  const geo=geoScore(p);
   const lc=(ok,txt)=>`<span class="lc ${ok?'ok':'warn'}">${ok?'✓':'!'} ${txt}</span>`;
-  const liCheck=`<div class="sect-l">LinkedIn-Feinschliff</div><div class="licheck">${lc(hookOk,'Hook vor „…mehr"')}<span class="lc">≈ ${chars} Zeichen</span>${lc(hCount>=3&&hCount<=5,hCount+' Hashtags')}${lc(endsQ,'endet mit Frage')}</div>`;
+  const liCheck=`<div class="sect-l">GEO-Score · Leitfaden-Check <span class="geo-help" title="Wie zitierfähig ist der Post für KI-Antworten? Regeln aus dem LinkedIn-Leitfaden.">ⓘ</span></div>
+    <div class="geo-row">
+      <div class="geo-badge" style="--gc:${geo.col}"><b>${geo.score}</b><span>GEO /100</span></div>
+      <div class="geo-lbl" style="color:${geo.col}">${geo.label}</div>
+    </div>
+    <div class="licheck">${geo.checks.map(c=>lc(c.ok,c.label)).join('')}</div>`;
 
   /* ===== Rollen-abhängige Bausteine: Florian/Saskia = C-Level-Freigabe (primär) · Astrid = Veto (nachgelagert) · Übersicht = read-only ===== */
   const vetoBadge = vetoed(id)?'<span class="ci-badge ci-rot">⚠ Veto (Astrid)</span>':'';
@@ -1165,6 +1289,16 @@ function openModal(id){
     decisionHTML=`${warn}<div class="sect-l">Deine Freigabe</div>${ampelHTML}${fbHTML}${exportHTML}`;
   }
 
+  // ===== Verlauf + Versions-Diff + Kommentare =====
+  const hist=state[id].history||[];
+  const histHTML = hist.length?`<div class="sect-l">Verlauf</div><div class="hist">${hist.slice().reverse().map(h=>`<div class="hi"><span class="hi-b">${h.by}</span> ${h.action}${h.note?`: „${h.note.replace(/</g,'&lt;')}"`:''}<span class="hi-t">${h.ts}</span></div>`).join('')}</div>`:'';
+  const verHTML = p.v2?`<div class="sect-l">Versionen</div><div class="verbar"><span class="verpill">V1 Original</span><span class="verpill v2">V2 überarbeitet</span><button class="verdiff-btn" onclick="toggleDiff('${id}')">Diff anzeigen</button></div><div class="verdiff" id="verdiff" style="display:none"></div>`:'';
+  const cmts=state[id].comments||[];
+  const cmtHTML=`<div class="sect-l">Kommentare${cmts.length?` · ${cmts.length}`:''}</div>
+    <div class="cmts">${cmts.length?cmts.map(c=>`<div class="cmt"><div class="cmt-h"><span class="cmt-b">${c.by}</span><span class="cmt-t">${c.ts}</span></div><div class="cmt-x">${c.text.replace(/</g,'&lt;')}</div></div>`).join(''):'<div class="cmt-empty">Noch keine Kommentare. Notiz fürs Team hinterlassen.</div>'}</div>
+    <div class="cmt-add"><textarea id="cmtInput" placeholder="Kommentar an Team / 923b …"></textarea><button class="cmt-send" onclick="addComment()">Senden</button></div>`;
+  const threadHTML=`<div class="thread">${verHTML}${histHTML}${cmtHTML}</div>`;
+
   document.getElementById('modal').innerHTML=`
     <button class="close" onclick="closeModal()">×</button>
     <div class="mock-side">
@@ -1223,6 +1357,8 @@ function openModal(id){
       ${checkHTML}
 
       ${decisionHTML}
+
+      ${threadHTML}
     </div>`;
   document.getElementById('overlay').classList.add('open');
   document.body.style.overflow='hidden';
@@ -1252,9 +1388,29 @@ function closeModal(){
   document.body.style.overflow='';
   openId=null;
 }
+function addComment(){
+  const t=document.getElementById('cmtInput'); if(!t) return;
+  const v=(t.value||'').trim(); if(!v) return;
+  state[openId].comments.push({by:roleLabel(),text:v,ts:nowStr()});
+  logHist(openId,'kommentiert'); save(); openModal(openId);
+}
+function toggleDiff(id){
+  const el=document.getElementById('verdiff'); if(!el) return;
+  const p=RAW.find(x=>x.id===id); if(!p||!p.v2){el.style.display='none';return;}
+  if(el.style.display==='none'){ el.innerHTML=lineDiff(p.body,p.v2); el.style.display='block'; }
+  else el.style.display='none';
+}
+function lineDiff(a,b){
+  const A=a.split('\n').map(s=>s.trim()).filter(Boolean), B=b.split('\n').map(s=>s.trim()).filter(Boolean);
+  const setA=new Set(A), setB=new Set(B);
+  const esc=s=>s.replace(/</g,'&lt;');
+  const left=A.map(l=>`<div class="dl ${setB.has(l)?'':'del'}">${esc(l)}</div>`).join('');
+  const right=B.map(l=>`<div class="dl ${setA.has(l)?'':'add'}">${esc(l)}</div>`).join('');
+  return `<div class="diffgrid"><div><div class="dh">V1 Original</div>${left}</div><div><div class="dh">V2 überarbeitet</div>${right}</div></div>`;
+}
 function setStatus(st){   // Florian/Saskia, primäre Freigabe
   const s=state[openId];
-  s.status=st; save();
+  s.status=st; logHist(openId, st==='gruen'?'freigegeben':(st==='orange'?'Korrektur angefragt':'abgelehnt')); save();
   document.querySelectorAll('.abtn').forEach(b=>b.classList.remove('active'));
   document.querySelector('.abtn.'+({gruen:'g',orange:'o',rot:'r'}[st])).classList.add('active');
   const sp=document.getElementById('stPill');
@@ -1278,7 +1434,7 @@ function openVeto(){
 function submitVeto(){
   const v=state[openId].veto, id=openId;
   v.fbText=document.getElementById('fbText').value;
-  v.active=true; save();
+  v.active=true; logHist(openId,'Veto eingelegt',v.fbText); save();
   const btn=(typeof event!=='undefined'&&event)?event.target:document.getElementById('fbSave');
   if(btn){ btn.textContent='✓ Veto abgesendet'; btn.style.background='var(--grey)'; }
   render();
@@ -1287,7 +1443,7 @@ function submitVeto(){
 }
 function withdrawVeto(){
   const v=state[openId].veto, id=openId;
-  v.active=false; v.fbText=''; v.chips=[]; v.voice=false; save();
+  v.active=false; v.fbText=''; v.chips=[]; v.voice=false; logHist(id,'Veto zurückgezogen'); save();
   render(); openModal(id);
   toast('Veto zurückgezogen, Post bleibt freigegeben.','ok',2400);
 }
@@ -1301,6 +1457,7 @@ function toggleChip(c){
 function saveFeedback(){   // Florian/Saskia, Korrektur/Ablehnung
   const s=state[openId], p=RAW.find(x=>x.id===openId), id=openId;
   s.fbText=document.getElementById('fbText').value;
+  logHist(id, s.status==='rot'?'Ablehnung begründet':'Korrektur gesendet', s.fbText);
   save();
   const isRej=s.status==='rot';
   const btn=event.target, orig=isRej?'Ablehnung bestätigen':'Korrektur an 923b senden →';
@@ -1312,7 +1469,7 @@ function saveFeedback(){   // Florian/Saskia, Korrektur/Ablehnung
     setTimeout(()=>{
       const st=state[id];
       st.ver=2; st.status='gruen'; st.chips=[]; st.fbText=''; st.voice=false;
-      save();
+      logHist(id,'V2 eingearbeitet'); save();
       if(openId===id) openModal(id);
       render();
       toast('✨ V2 ist da, dein Feedback eingearbeitet, Post wieder freigegeben.','ok',3400);
