@@ -157,6 +157,10 @@ header{position:sticky;top:0;z-index:40;backdrop-filter:blur(18px);
 .kcol h3{font-size:12.5px;font-weight:700;display:flex;align-items:center;gap:8px;margin-bottom:14px;color:var(--ink2)}
 .kcol h3 .n{margin-left:auto;font-size:11px;background:var(--panel2);padding:2px 9px;border-radius:20px;color:var(--ink3)}
 .kcard{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:13px;margin-bottom:11px;cursor:pointer;transition:.15s}
+.kanban.draggable .kcard{cursor:grab}
+.kanban.draggable .kcard:active{cursor:grabbing}
+.kcard.dragging{opacity:.45;transform:scale(.98)}
+.kcol.drop-hover{outline:2px dashed var(--yellow);outline-offset:-3px;background:var(--yellow-dim)}
 .kcard:hover{border-color:var(--line2);transform:translateY(-2px);box-shadow:var(--shadow)}
 .kcard .kt{font-size:13px;font-weight:600;line-height:1.35;margin-bottom:9px}
 .kcard .kmeta{display:flex;align-items:center;gap:8px}
@@ -1011,12 +1015,13 @@ function renderBoard(){
   const cols = isVeto()
     ? [ {k:['ok'],t:'Kein Einwand',ic:'🟢'}, {k:['veto'],t:'Veto eingelegt',ic:'⛔'} ]
     : [ ...(hasDraft?[{k:['offen'],t:'Entwurf / Zur Freigabe',ic:'📝'}]:[]), {k:['orange'],t:'In Korrektur',ic:'🟠'}, {k:['rot'],t:'Abgelehnt',ic:'🔴'}, {k:['gruen'],t:'Freigegeben',ic:'🟢'} ];
-  return `<div class="kanban">`+cols.map(col=>{
+  const drag = curPerson!=='beide';
+  return `<div class="kanban${drag?' draggable':''}">`+cols.map(col=>{
     const items=ps.filter(p=>col.k.includes(actStatus(p.id)));
-    return `<div class="kcol"><h3>${col.ic} ${col.t}<span class="n">${items.length}</span></h3>`+
+    return `<div class="kcol" data-col="${col.k[0]}" ${drag?`ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event,'${col.k[0]}')"`:''}><h3>${col.ic} ${col.t}<span class="n">${items.length}</span></h3>`+
       items.map(p=>{const pl=pill(p);
         const vflag=vetoed(p.id);
-        return `<div class="kcard${vflag?' vetoed':''}" onclick="openModal('${p.id}')">
+        return `<div class="kcard${vflag?' vetoed':''}" ${drag?`draggable="true" ondragstart="dragStart(event,'${p.id}')" ondragend="dragEnd(event)"`:''} onclick="openModal('${p.id}')">
           <div class="kt">${p.draft?'<span class="draft-badge">Entwurf</span> ':''}${p.theme}</div>
           <div class="kmeta">
             ${curPerson==='beide'?`<span class="av" style="width:18px;height:18px;border-radius:50%;font-size:9px;font-weight:800;display:grid;place-items:center;color:#12121c;background:${PEOPLE[p.p].avc}">${PEOPLE[p.p].av}</span>`:''}
@@ -1425,6 +1430,35 @@ function setStatus(st){   // Florian/Saskia, primäre Freigabe
   const eb=document.getElementById('exportBar'); if(eb) eb.classList.toggle('show', st==='gruen');
   if(st==='gruen') burst();
   render();
+}
+/* ===== Board: Drag-and-drop zwischen Spalten ===== */
+let dragId=null;
+function dragStart(e,id){ dragId=id; try{e.dataTransfer.effectAllowed='move'; e.dataTransfer.setData('text/plain',id);}catch(_){} e.currentTarget.classList.add('dragging'); }
+function dragEnd(e){ e.currentTarget.classList.remove('dragging'); document.querySelectorAll('.kcol.drop-hover').forEach(c=>c.classList.remove('drop-hover')); }
+function dragOver(e){ e.preventDefault(); try{e.dataTransfer.dropEffect='move';}catch(_){} e.currentTarget.classList.add('drop-hover'); }
+function dragLeave(e){ if(!e.currentTarget.contains(e.relatedTarget)) e.currentTarget.classList.remove('drop-hover'); }
+function dropCard(e,target){
+  e.preventDefault();
+  const col=e.currentTarget; col.classList.remove('drop-hover');
+  const id=dragId||(e.dataTransfer&&e.dataTransfer.getData('text/plain')); dragId=null;
+  if(!id||!state[id]) return;
+  if(isVeto()){
+    const on = target==='veto';
+    if(state[id].veto.active===on){ return; }
+    state[id].veto.active=on;
+    if(!on){ state[id].veto.fbText=''; state[id].veto.chips=[]; state[id].veto.voice=false; }
+    logHist(id, on?'Veto eingelegt (Board)':'Veto zurückgezogen (Board)');
+    save(); render();
+    toast(on?'⛔ Veto gesetzt.':'Veto zurückgezogen.', on?'work':'ok', 2200);
+  } else {
+    if(!['offen','orange','rot','gruen'].includes(target)) return;
+    if(state[id].status===target) return;
+    state[id].status=target;
+    logHist(id, {offen:'als Entwurf markiert',orange:'auf Korrektur gesetzt',rot:'abgelehnt',gruen:'freigegeben'}[target]+' (Board)');
+    save(); render();
+    if(target==='gruen') burst();
+    toast('Verschoben: '+{offen:'Entwurf',orange:'In Korrektur',rot:'Abgelehnt',gruen:'Freigegeben'}[target], 'ok', 2000);
+  }
 }
 /* ===== Astrid, Veto (nachgelagert, Warnflag) ===== */
 function openVeto(){
