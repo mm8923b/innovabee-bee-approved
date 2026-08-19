@@ -497,6 +497,37 @@ button:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px
 .cmt-add textarea:focus{outline:none;border-color:var(--yellow)}
 .cmt-send{background:var(--panel2);border:1px solid var(--line2);color:var(--ink);font-weight:700;font-size:12px;padding:9px 14px;border-radius:10px;cursor:pointer;white-space:nowrap}
 .cmt-send:hover{background:var(--yellow);color:#12121c}
+/* Post-Bewertung 1-10 (Florian/Saskia) */
+.rate-wrap{margin-bottom:12px}
+.rate-head{margin-bottom:9px}
+.rate-head .rhint{font-size:11.5px;color:var(--ink3);line-height:1.45}
+.rate-scale{display:grid;grid-template-columns:repeat(10,1fr);gap:6px}
+.rate-chip{-webkit-appearance:none;appearance:none;min-height:46px;border:1.5px solid var(--line2);background:var(--card);
+  border-radius:11px;color:var(--ink2);font-size:15px;font-weight:800;cursor:pointer;display:grid;place-items:center;
+  transition:transform .12s,background .15s,border-color .15s,color .15s;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.rate-chip:hover{border-color:var(--rc);color:var(--rc);transform:translateY(-1px)}
+.rate-chip:active{transform:scale(.94)}
+.rate-chip.sel{background:var(--rc);border-color:var(--rc);box-shadow:0 5px 16px -5px var(--rc)}
+.rate-ends{display:flex;justify-content:space-between;font-size:10px;color:var(--ink3);margin-top:7px;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.rate-result{margin-top:11px;font-size:12.5px;color:var(--ink2);display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.rate-result b{font-size:15px}
+.rate-ro{margin-bottom:12px;font-size:12.5px;color:var(--ink2);display:flex;align-items:center;gap:10px;
+  background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:10px 13px}
+.rate-ro .rv{font-size:17px;font-weight:800;flex-shrink:0}
+.rate-ro.rate-ro-empty{color:var(--ink3)}
+/* 923b Bewertungs-Learnings (Cockpit) */
+.mc-learn{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px;margin-bottom:14px}
+.mc-learn .ml-h{font-size:12.5px;font-weight:800;color:var(--ink);display:flex;align-items:center;gap:8px;margin-bottom:11px}
+.mc-learn .ml-h span{margin-left:auto;font-size:10px;font-weight:700;color:var(--ink3);background:var(--panel);padding:3px 9px;border-radius:20px}
+.ml-avg{display:flex;gap:9px;margin-bottom:4px}
+.ml-a{flex:1;background:var(--panel);border-radius:10px;padding:10px 6px;text-align:center}
+.ml-a b{display:block;font-size:20px;font-weight:800;line-height:1;color:var(--ink)}
+.ml-a span{font-size:10px;color:var(--ink3);font-weight:700}
+.ml-row{display:flex;gap:9px;align-items:flex-start;font-size:11.5px;line-height:1.4;padding:9px 0 3px;border-top:1px solid var(--line);margin-top:9px}
+.ml-row .ml-v{font-size:14px;font-weight:800;flex-shrink:0;min-width:34px}
+.ml-row b{color:var(--ink);font-weight:700}
+.ml-row i{display:block;color:var(--ink3);font-style:italic;margin-top:3px}
+.mc-learn-empty{font-size:11.5px;color:var(--ink3);line-height:1.45}
 /* greeting */
 .greet{font-size:14px;font-weight:600;color:var(--ink2);margin:22px 0 -6px;display:flex;align-items:center;gap:8px}
 .greet b{color:var(--ink);font-weight:800}
@@ -536,6 +567,8 @@ button:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px
   .pstep .arr{display:none}
   .legend{margin-left:0}
   .hbar{flex-wrap:wrap;gap:12px}
+  .rate-scale{grid-template-columns:repeat(5,1fr)}
+  .rate-chip{min-height:52px;font-size:16px}
 }
 </style>
 </head>
@@ -863,14 +896,32 @@ const LS='beeApproved_v3';
 let state = JSON.parse(localStorage.getItem(LS)||'{}');
 RAW.forEach(p=>{
   // Standard: Florian/Saskia (C-Level) haben bereits freigegeben ('gruen'). Entwürfe starten 'offen'. Astrid = nachgelagertes Veto.
-  if(!state[p.id]) state[p.id]={status:(p.draft?'offen':'gruen'),fbText:'',chips:[],voice:false,ver:1,veto:{active:false,fbText:'',chips:[],voice:false},comments:[],history:[]};
+  if(!state[p.id]) state[p.id]={status:(p.draft?'offen':'gruen'),fbText:'',chips:[],voice:false,ver:1,veto:{active:false,fbText:'',chips:[],voice:false},comments:[],history:[],rating:{val:null}};
   if(!state[p.id].veto) state[p.id].veto={active:false,fbText:'',chips:[],voice:false};
   if(!state[p.id].comments) state[p.id].comments=[];
   if(!state[p.id].history) state[p.id].history=[];
+  if(!state[p.id].rating) state[p.id].rating={val:null};
 });
 function save(){localStorage.setItem(LS,JSON.stringify(state));}
 function nowStr(){ const d=new Date(); return d.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'})+' '+d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}); }
 function logHist(id,action,note){ if(!state[id].history)state[id].history=[]; state[id].history.push({by:roleLabel(),action,note:note||'',ts:nowStr()}); }
+/* Post-Bewertung: Farbe (rot→grün) + Wort je Wert 1-10 */
+function rateColor(v){ const h=Math.round((v-1)/9*125); const sel=(v>=4&&v<=6); return {c:`hsl(${h} 66% 44%)`, txt:sel?'#241f00':'#fff'}; }
+function rateWord(v){ return v>=9?'perfekt':v>=7?'sehr gut':v>=5?'solide':v>=3?'schwach':'schlecht'; }
+function setRating(id,val){
+  if(isVeto()||curPerson==='beide') return;               // nur Florian/Saskia bewerten
+  const prev=state[id].rating&&state[id].rating.val;
+  if(prev===val){ state[id].rating={val:null}; logHist(id,'Bewertung zurückgenommen'); }
+  else { state[id].rating={val,ts:nowStr(),by:roleLabel()}; logHist(id, prev?`Bewertung auf ${val}/10 geändert`:`mit ${val}/10 bewertet`); }
+  save();
+  const cur=state[id].rating.val;
+  const sc=document.getElementById('rateScale');
+  if(sc){ [...sc.children].forEach((b,i)=>{ const vv=i+1, sel=vv===cur; b.classList.toggle('sel',sel); b.style.color=sel?rateColor(vv).txt:''; }); }
+  const res=document.getElementById('rateRes');
+  if(res){ if(cur){ res.style.color=''; res.innerHTML=`Deine Bewertung: <b style="color:${rateColor(cur).c}">${cur}/10</b> · ${rateWord(cur)}<span style="color:var(--ink3);font-size:11px;margin-left:auto">${state[id].rating.ts}</span>`; }
+           else { res.style.color='var(--ink3)'; res.innerHTML='Noch nicht bewertet, tippe einen Wert.'; } }
+  if(cur) toast(`⭐ Bewertet: ${cur}/10 · ${rateWord(cur)}`,'ok',1800);
+}
 
 /* ============ GEO-SCORE + LEITFADEN-CHECK (aus LinkedIn-Leitfaden) ============ */
 function geoScore(p){
@@ -1253,7 +1304,7 @@ function makeDraft(i){
   const id='DRAFT-'+Date.now();
   const post={p:person,id,wk:4,day:'Do',date:'24.09.',time:'09:00',pillar:(person==='saskia'?'AI':'B'),fmt:'Text',theme:title.slice(0,58),quote:'Entwurf aus\ndeinem Thema',why:`Aus einem eingebrachten Thema erzeugt (${t.kind}, von ${t.by}).`,body,tags:'#Innovabee #SAP',draft:true};
   RAW.push(post); drafts.push(post); saveDrafts();
-  state[id]={status:'offen',fbText:'',chips:[],voice:false,ver:1,veto:{active:false,fbText:'',chips:[],voice:false},comments:[],history:[{by:'923b',action:'Entwurf aus Thema erzeugt',note:t.kind,ts:nowStr()}]};
+  state[id]={status:'offen',fbText:'',chips:[],voice:false,ver:1,veto:{active:false,fbText:'',chips:[],voice:false},comments:[],history:[{by:'923b',action:'Entwurf aus Thema erzeugt',note:t.kind,ts:nowStr()}],rating:{val:null}};
   save();
   curView='board'; statusFilter='offen';
   document.querySelectorAll('#vtabs button').forEach(x=>x.classList.toggle('active',x.dataset.v==='board'));
@@ -1359,11 +1410,33 @@ function openModal(id){
       <textarea id="editArea"></textarea>
       <div class="edit-actions"><button class="edit-save" onclick="saveEdit('${id}')">Neue Version speichern</button><button class="edit-cancel" onclick="cancelEdit()">Abbrechen</button></div>
     </div></div>`;
+  // ===== Post-Bewertung (Florian/Saskia geben 1-10) — direkt über den Kommentaren =====
+  const rt=state[id].rating||{val:null};
+  let ratingHTML;
+  if(!isVeto() && curPerson!=='beide'){
+    const scale=[1,2,3,4,5,6,7,8,9,10].map(v=>{ const rc=rateColor(v), sel=rt.val===v;
+      return `<button class="rate-chip${sel?' sel':''}" style="--rc:${rc.c}${sel?`;color:${rc.txt}`:''}" onclick="setRating('${id}',${v})" aria-label="${v} von 10">${v}</button>`; }).join('');
+    const res=rt.val
+      ? `<div class="rate-result" id="rateRes">Deine Bewertung: <b style="color:${rateColor(rt.val).c}">${rt.val}/10</b> · ${rateWord(rt.val)}<span style="color:var(--ink3);font-size:11px;margin-left:auto">${rt.ts||''}</span></div>`
+      : `<div class="rate-result" id="rateRes" style="color:var(--ink3)">Noch nicht bewertet, tippe einen Wert.</div>`;
+    ratingHTML=`<div class="sect-l">Wie gut ist dieser Post?</div>
+      <div class="rate-wrap">
+        <div class="rate-head"><span class="rhint">Deine Note hilft uns, die nächsten Posts besser zu treffen. Ein Kommentar dazu (unten) macht das Learning konkret.</span></div>
+        <div class="rate-scale" id="rateScale">${scale}</div>
+        <div class="rate-ends"><span>1 · schlecht</span><span>perfekt · 10</span></div>
+        ${res}
+      </div>`;
+  } else {
+    const nm=per.name.split(' ')[0];
+    ratingHTML=rt.val
+      ? `<div class="sect-l">Bewertung ${nm}</div><div class="rate-ro"><span class="rv" style="color:${rateColor(rt.val).c}">${rt.val}/10</span><span>${rateWord(rt.val)} · ${nm}${rt.ts?` · ${rt.ts}`:''}</span></div>`
+      : `<div class="sect-l">Bewertung</div><div class="rate-ro rate-ro-empty">Noch nicht bewertet, ${nm} vergibt die Note im eigenen Freigabe-Modus.</div>`;
+  }
   const cmts=state[id].comments||[];
   const cmtHTML=`<div class="sect-l">Kommentare${cmts.length?` · ${cmts.length}`:''}</div>
     <div class="cmts">${cmts.length?cmts.map(c=>`<div class="cmt"><div class="cmt-h"><span class="cmt-b">${c.by}</span><span class="cmt-t">${c.ts}</span></div><div class="cmt-x">${c.text.replace(/</g,'&lt;')}</div></div>`).join(''):'<div class="cmt-empty">Noch keine Kommentare. Notiz fürs Team hinterlassen.</div>'}</div>
     <div class="cmt-add"><textarea id="cmtInput" placeholder="Kommentar an Team / 923b …"></textarea><button class="cmt-send" onclick="addComment()">Senden</button></div>`;
-  const threadHTML=`<div class="thread">${editHTML}${verHTML}${histHTML}${cmtHTML}</div>`;
+  const threadHTML=`<div class="thread">${editHTML}${verHTML}${histHTML}${ratingHTML}${cmtHTML}</div>`;
 
   document.getElementById('modal').innerHTML=`
     <button class="close" onclick="closeModal()">×</button>
@@ -1685,16 +1758,46 @@ function toggleDrawer(open){
   if(open)renderDrawer();
   d.classList.toggle('open',open);
 }
+function ratingStats(){
+  const rated=RAW.filter(p=>state[p.id].rating&&state[p.id].rating.val);
+  const avg=a=>a.length?a.reduce((s,x)=>s+x,0)/a.length:null;
+  const byP=k=>rated.filter(p=>p.p===k).map(p=>state[p.id].rating.val);
+  const sorted=rated.slice().sort((a,b)=>state[b.id].rating.val-state[a.id].rating.val);
+  return {rated, all:avg(rated.map(p=>state[p.id].rating.val)), fl:avg(byP('florian')), sf:avg(byP('saskia')),
+    best:sorted[0], worst:sorted[sorted.length-1]};
+}
+function learnHTML(){
+  const st=ratingStats(); if(!st.rated.length) return '';
+  const f1=x=>x==null?'–':x.toFixed(1);
+  const cmtOf=p=>{const c=state[p.id].comments; return c&&c.length?c[c.length-1].text:'';};
+  const row=(p,dir)=>{ const v=state[p.id].rating.val, cm=cmtOf(p);
+    return `<div class="ml-row"><span class="ml-v" style="color:${rateColor(v).c}">${dir} ${v}</span><div><b>${PEOPLE[p.p].name.split(' ')[0]}: ${p.theme}</b>${cm?`<i>„${cm.replace(/</g,'&lt;')}"</i>`:''}</div></div>`; };
+  const showWorst=st.worst&&st.best&&st.worst.id!==st.best.id;
+  return `<div class="mc-learn">
+    <div class="ml-h">📊 Bewertungs-Learnings <span>${st.rated.length} von ${RAW.length} bewertet</span></div>
+    <div class="ml-avg">
+      <div class="ml-a"><b style="color:${st.all!=null?rateColor(Math.round(st.all)).c:'var(--ink)'}">${f1(st.all)}</b><span>Schnitt</span></div>
+      <div class="ml-a"><b>${f1(st.fl)}</b><span>Florian</span></div>
+      <div class="ml-a"><b>${f1(st.sf)}</b><span>Saskia</span></div>
+    </div>
+    ${st.best?row(st.best,'▲'):''}
+    ${showWorst?row(st.worst,'▼'):''}
+  </div>`;
+}
 function renderDrawer(){
   const el=document.getElementById('mcBody');
+  const learn=learnHTML();
   const vetoItems=RAW.filter(p=>vetoed(p.id)).map(p=>({p,kind:'veto'}));
   const fsItems=RAW.filter(p=>['orange','rot'].includes(state[p.id].status)).map(p=>({p,kind:state[p.id].status}));
   const items=[...vetoItems,...fsItems];   // Vetos zuerst, dann F/S-Rückmeldungen
-  if(!items.length){el.innerHTML='<div class="mc-empty">Alles im grünen Bereich 🎉<br>Sobald Florian/Saskia „Korrektur"/„Ablehnen" wählen<br>oder Astrid ein Veto einlegt, landet es hier.</div>';return;}
+  if(!items.length){el.innerHTML=learn+'<div class="mc-empty">Alles im grünen Bereich 🎉<br>Sobald Florian/Saskia „Korrektur"/„Ablehnen" wählen<br>oder Astrid ein Veto einlegt, landet es hier.</div>';return;}
+  el.innerHTML=learn+renderDrawerItems(items);
+}
+function renderDrawerItems(items){
   const conf={ veto:{lbl:'Veto · Astrid',col:'var(--violet)',bg:'rgba(240,86,127,.16)'},
                rot:{lbl:'Abgelehnt',col:'var(--red)',bg:'rgba(255,93,108,.14)'},
                orange:{lbl:'Korrektur',col:'var(--orange)',bg:'rgba(255,159,69,.14)'} };
-  el.innerHTML=items.map(({p,kind})=>{
+  return items.map(({p,kind})=>{
     const per=PEOPLE[p.p], cf=conf[kind];
     const src = kind==='veto'?state[p.id].veto:state[p.id];
     const who = kind==='veto'?'Astrid':per.name.split(' ')[0];
