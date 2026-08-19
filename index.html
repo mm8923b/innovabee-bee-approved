@@ -557,18 +557,31 @@ button:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px
 .spin{width:15px;height:15px;border:2px solid rgba(255,255,255,.25);border-top-color:var(--yellow);border-radius:50%;animation:spin .7s linear infinite}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.01ms!important}}
 
-@media(max-width:900px){
+@media screen and (max-width:900px){
   .cockpit{grid-template-columns:1fr;gap:16px}
   .ring{margin:0 auto}
   .cockpit-actions{flex-direction:row;flex-wrap:wrap}
-  .modal{flex-direction:column;max-height:94vh}
-  .mock-side{width:100%;padding:20px}
+  /* Modal = EIN natürlicher Scroll-Fluss (Vorschau oben, Aktionen darunter), Overlay scrollt durch */
+  .overlay{align-items:flex-start;padding:0}
+  .modal{flex-direction:column;max-height:none;min-height:100%;overflow:visible;border-radius:0;border:none}
+  .mock-side{width:100%;padding:16px 18px 18px;overflow:visible;flex:none}
+  .screen{height:400px}
+  .det{overflow:visible;flex:none;padding:20px 18px 78px}
+  /* Schließen immer erreichbar */
+  .close{position:fixed;top:12px;right:12px;z-index:100;background:rgba(31,31,49,.94)}
   .kanban,.cal-grid,.psteps{grid-template-columns:1fr}
   .pstep .arr{display:none}
   .legend{margin-left:0}
   .hbar{flex-wrap:wrap;gap:12px}
   .rate-scale{grid-template-columns:repeat(5,1fr)}
-  .rate-chip{min-height:52px;font-size:16px}
+  .rate-chip{min-height:50px;font-size:16px}
+  html[data-theme="light"] .close{background:rgba(255,255,255,.94)}
+  /* Post-Navigation raus aus dem Textbereich → untere Ecken, fixiert & solide */
+  .nav-arrow{top:auto;bottom:calc(env(safe-area-inset-bottom,0px) + 14px);transform:none;width:46px;height:46px;
+    background:rgba(31,31,49,.94);box-shadow:0 6px 20px -6px rgba(0,0,0,.7)}
+  .nav-arrow:hover,.nav-arrow:active{transform:none}
+  .nav-arrow.prev{left:14px} .nav-arrow.next{right:14px}
+  html[data-theme="light"] .nav-arrow{background:rgba(255,255,255,.94)}
 }
 </style>
 </head>
