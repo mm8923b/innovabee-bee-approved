@@ -515,6 +515,11 @@ button:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px
   background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:10px 13px}
 .rate-ro .rv{font-size:17px;font-weight:800;flex-shrink:0}
 .rate-ro.rate-ro-empty{color:var(--ink3)}
+.rate-cta{margin:9px 0 12px;display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 16px;
+  background:var(--yellow-dim);border:1px solid rgba(253,195,0,.32);color:var(--gold-ink);
+  font-size:12.5px;font-weight:800;border-radius:11px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .15s}
+.rate-cta:hover{background:rgba(253,195,0,.2)}
+.rate-cta:active{transform:scale(.98)}
 /* 923b Bewertungs-Learnings (Cockpit) */
 .mc-learn{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px;margin-bottom:14px}
 .mc-learn .ml-h{font-size:12.5px;font-weight:800;color:var(--ink);display:flex;align-items:center;gap:8px;margin-bottom:11px}
@@ -934,6 +939,17 @@ function setRating(id,val){
   if(res){ if(cur){ res.style.color=''; res.innerHTML=`Deine Bewertung: <b style="color:${rateColor(cur).c}">${cur}/10</b> · ${rateWord(cur)}<span style="color:var(--ink3);font-size:11px;margin-left:auto">${state[id].rating.ts}</span>`; }
            else { res.style.color='var(--ink3)'; res.innerHTML='Noch nicht bewertet, tippe einen Wert.'; } }
   if(cur) toast(`⭐ Bewertet: ${cur}/10 · ${rateWord(cur)}`,'ok',1800);
+}
+// Aus Übersicht heraus in die Bewerter-Rolle springen und den Post gleich wieder öffnen
+function switchRoleTo(person){
+  curPerson=person;
+  document.querySelectorAll('#ptoggle button').forEach(x=>x.classList.toggle('active', x.dataset.p===person));
+  render();
+}
+function rateAs(id,person){
+  switchRoleTo(person);
+  openModal(id);
+  setTimeout(()=>{ const el=document.getElementById('rateScale'); if(el) el.scrollIntoView({block:'center'}); }, 80);
 }
 
 /* ============ GEO-SCORE + LEITFADEN-CHECK (aus LinkedIn-Leitfaden) ============ */
@@ -1441,9 +1457,17 @@ function openModal(id){
       </div>`;
   } else {
     const nm=per.name.split(' ')[0];
-    ratingHTML=rt.val
-      ? `<div class="sect-l">Bewertung ${nm}</div><div class="rate-ro"><span class="rv" style="color:${rateColor(rt.val).c}">${rt.val}/10</span><span>${rateWord(rt.val)} · ${nm}${rt.ts?` · ${rt.ts}`:''}</span></div>`
-      : `<div class="sect-l">Bewertung</div><div class="rate-ro rate-ro-empty">Noch nicht bewertet, ${nm} vergibt die Note im eigenen Freigabe-Modus.</div>`;
+    const roShown = rt.val
+      ? `<div class="rate-ro"><span class="rv" style="color:${rateColor(rt.val).c}">${rt.val}/10</span><span>${rateWord(rt.val)} · ${nm}${rt.ts?` · ${rt.ts}`:''}</span></div>`
+      : `<div class="rate-ro rate-ro-empty">Noch nicht bewertet.</div>`;
+    if(isVeto()){
+      // Astrid bewertet nicht, sieht die Note nur
+      ratingHTML=`<div class="sect-l">Bewertung ${nm}</div>${roShown}`;
+    } else {
+      // Übersicht: read-only + Ein-Tipp-Sprung in die Bewerter-Rolle (kein Sackgassen-Hinweis)
+      ratingHTML=`<div class="sect-l">Bewertung ${nm}</div>${roShown}
+        <button class="rate-cta" onclick="rateAs('${id}','${p.p}')">${rt.val?`Als ${nm} ändern`:`Jetzt als ${nm} bewerten`} →</button>`;
+    }
   }
   const cmts=state[id].comments||[];
   const cmtHTML=`<div class="sect-l">Kommentare${cmts.length?` · ${cmts.length}`:''}</div>
